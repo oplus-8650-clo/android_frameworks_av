@@ -27,6 +27,7 @@
 #include "DeviceDescriptor.h"
 #include "TypeConverter.h"
 #include "HwModule.h"
+#include <unordered_set>
 
 namespace android {
 
@@ -385,11 +386,13 @@ DeviceVector DeviceVector::getDevicesFromTypes(const DeviceTypeSet& types) const
     if (types.empty()) {
         return devices;
     }
+    std::unordered_set<audio_devices_t> foundType;
     for (size_t i = 0; i < size(); i++) {
-        if (types.count(itemAt(i)->type()) != 0) {
+        if (types.count(itemAt(i)->type()) != 0 && (foundType.count(itemAt(i)->type()) == 0)) {
             devices.add(itemAt(i));
-            ALOGV("DeviceVector::%s() for type %08x found %p",
-                    __func__, itemAt(i)->type(), itemAt(i).get());
+            foundType.insert(itemAt(i)->type());
+            ALOGV("DeviceVector::%s() for type %08x address %s",
+                    __func__, itemAt(i)->type(), itemAt(i)->address().c_str());
         }
     }
     return devices;

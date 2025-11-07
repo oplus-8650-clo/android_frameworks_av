@@ -1,7 +1,9 @@
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 /*
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2020-06-10: Audio: libstagefright: check for audio source aggregate before initialization
  * Copyright (c) 2013 - 2018, 2020 The Linux Foundation. All rights reserved.
+// QTI_END: 2020-06-10: Audio: libstagefright: check for audio source aggregate before initialization
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
  *
  * Redistribution and use in source and binary forms, with or without
@@ -138,7 +140,9 @@ struct AVUtils {
                 const char* mime, bool encoder, const sp<AMessage> &format);
     virtual bool isEnhancedExtension(const char *extension);
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2020-06-10: Audio: libstagefright: check for audio source aggregate before initialization
     virtual bool isAudioSourceAggregate(const audio_attributes_t *, uint32_t channelCount);
+// QTI_END: 2020-06-10: Audio: libstagefright: check for audio source aggregate before initialization
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 
     virtual bool hasAudioSampleBits(const sp<MetaData> &);

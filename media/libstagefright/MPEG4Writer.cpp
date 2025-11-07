@@ -3942,7 +3942,7 @@ status_t MPEG4Writer::Track::threadEntry() {
                             (const uint8_t *)buffer->data()
                                 + buffer->range_offset(),
                             buffer->range_length());
-                } else if (mIsMPEG4 || mIsAv1) {
+                } else if (mIsMPEG4 || mIsAv1 || mIsApv) {
                     err = copyCodecSpecificData((const uint8_t *)buffer->data() + buffer->range_offset(),
                             buffer->range_length());
                 }

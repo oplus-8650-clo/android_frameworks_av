@@ -443,13 +443,17 @@ sp<DeviceDescriptor> HwModuleCollection::createDevice(const audio_devices_t type
             // @todo quid of audio profile? import the profile from device of the same type?
             const auto &isoTypeDeviceForProfile =
                 profile->getSupportedDevices().getDevice(type, String8(), AUDIO_FORMAT_DEFAULT);
+// QTI_BEGIN: 2019-06-03: Audio: audiopolicy: check for device before adding to profile
             if (isoTypeDeviceForProfile) {
+// QTI_END: 2019-06-03: Audio: audiopolicy: check for device before adding to profile
                 device->importAudioPortAndPickAudioProfile(isoTypeDeviceForProfile, true /* force */);
 
+// QTI_BEGIN: 2019-06-03: Audio: audiopolicy: check for device before adding to profile
                 ALOGV("%s: adding device %s to profile %s", __FUNCTION__,
                       device->toString().c_str(), profile->getTagName().c_str());
                 profile->addSupportedDevice(device);
             }
+// QTI_END: 2019-06-03: Audio: audiopolicy: check for device before adding to profile
         }
     }
     return device;

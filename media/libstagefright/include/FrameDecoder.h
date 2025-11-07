@@ -67,7 +67,7 @@ struct FrameDecoder : public RefBase {
     sp<IMemory> extractFrame(FrameRect *rect = NULL);
 
     static sp<IMemory> getMetadataOnly(
-            const sp<MetaData> &trackMeta, int colorFormat,
+            const sp<MetaData> &trackMeta, int colorFormat, bool preferHw,
             bool thumbnail = false, uint32_t bitDepth = 0);
 
     status_t handleInputBufferAsync(int32_t index);

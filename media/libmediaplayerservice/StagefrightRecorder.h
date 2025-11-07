@@ -20,7 +20,9 @@
 
 #include <media/MediaMetricsItem.h>
 #include <media/MediaRecorderBase.h>
+// QTI_BEGIN: 2022-04-08: Audio: av: add support for compress audio recording
 #include <media/stagefright/AudioSource.h>
+// QTI_END: 2022-04-08: Audio: av: add support for compress audio recording
 #include <camera/CameraParameters.h>
 #include <utils/String8.h>
 #include <system/audio.h>
@@ -172,7 +174,9 @@ protected:
     double mCaptureFps;
     int64_t mTimeBetweenCaptureUs;
     sp<CameraSourceTimeLapse> mCameraSourceTimeLapse;
+// QTI_BEGIN: 2018-05-17: Camera: stagefright: Fix recording issues when EIS enabled
     sp<CameraSource> mCameraSource;
+// QTI_END: 2018-05-17: Camera: stagefright: Fix recording issues when EIS enabled
     String8 mParams;
 
     MetadataBufferType mMetaDataStoredInVideoBuffers;
@@ -199,7 +203,9 @@ protected:
     float mSelectedMicFieldDimension;
 
     static const int kMaxHighSpeedFps = 1000;
+// QTI_BEGIN: 2022-04-08: Audio: av: add support for compress audio recording
     static const uint32_t kDspSupportedBitRate = 36000;
+// QTI_END: 2022-04-08: Audio: av: add support for compress audio recording
 
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     virtual status_t prepareInternal();

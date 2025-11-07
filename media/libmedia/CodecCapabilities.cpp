@@ -57,6 +57,8 @@ static const std::vector<Feature> DECODER_FEATURES = {
     Feature(FEATURE_LowLatency,       (1 << 7), true),
     Feature(FEATURE_DynamicColorAspects, (1 << 8), true),
     Feature(FEATURE_DetachedSurface,     (1 << 9), true),
+    // This is a vendor feature, adding it for NDK to query
+    Feature(FEATURE_HeifRowModeDecode,   (1 << 29), true),
     // feature to exclude codec from REGULAR codec list
     Feature(FEATURE_SpecialCodec,     (1 << 30), false, true),
 };

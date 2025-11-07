@@ -1123,7 +1123,6 @@ status_t HeicCompositeStream::processInputFrame(int64_t frameNumber,
     bool hasOutputBuffer = inputFrame.muxer != nullptr ||
             (mDequeuedOutputBufferCnt < kMaxOutputSurfaceProducerCount);
     bool hasGainmapMetadata = !inputFrame.isoGainmapMetadata.empty();
-    bool hdrGainmapFormatReady = mHDRGainmapEnabled ? (mGainmapFormat != nullptr) : true;
 
     ALOGV("%s: [%" PRId64 "]: appSegmentReady %d, codecOutputReady %d, codecInputReady %d,"
             " dequeuedOutputBuffer %d, timestamp %" PRId64, __FUNCTION__, frameNumber,
@@ -1156,13 +1155,6 @@ status_t HeicCompositeStream::processInputFrame(int64_t frameNumber,
                     strerror(-res), res);
             return res;
         }
-    }
-
-    if (!hdrGainmapFormatReady) {
-        // If HDR gainmap is enabled, we need to wait until the gainmap format
-        // is received from the codec before starting the muxer. Otherwise,
-        // the muxer will be able to add the gainmap track.
-        return OK;
     }
 
     if (!(codecOutputReady && hasOutputBuffer) && !appSegmentReady) {

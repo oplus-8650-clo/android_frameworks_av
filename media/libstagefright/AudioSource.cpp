@@ -80,15 +80,19 @@ void AudioSource::set(
    mNoMoreFramesToRead = false;
   ALOGV("sampleRate: %u, outSampleRate: %u, channelCount: %u",
         sampleRate, outSampleRate, channelCount);
+// QTI_BEGIN: 2021-09-15: Audio: frameworks/av: Support for 6 channel audio record
   CHECK(channelCount == 1 || channelCount == 2 || channelCount == 6);
+// QTI_END: 2021-09-15: Audio: frameworks/av: Support for 6 channel audio record
   CHECK(sampleRate > 0);
 
+// QTI_BEGIN: 2021-04-29: Audio: libstagefright: check for audio source aggregate before initialization
   bool bAggregate = AVUtils::get()->isAudioSourceAggregate(attr, channelCount);
   if (bAggregate) {
       mInitCheck = NO_INIT;
       return;
   }
 
+// QTI_END: 2021-04-29: Audio: libstagefright: check for audio source aggregate before initialization
   size_t minFrameCount;
   status_t status = AudioRecord::getMinFrameCount(&minFrameCount,
                                                   sampleRate,

@@ -30,14 +30,14 @@
 #include <media/IMediaHTTPService.h>
 #include <media/stagefright/MediaCodecConstants.h>
 #include <media/stagefright/foundation/ADebug.h>
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
 #include <media/stagefright/foundation/AMessage.h>
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
 #include <media/stagefright/MediaCodecList.h>
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
 #include <media/stagefright/MediaDefs.h>
 #include <media/stagefright/MediaErrors.h>
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
 #include <media/stagefright/MediaExtractor.h>
 #include <media/stagefright/MediaExtractorFactory.h>
 #include <media/stagefright/MetaData.h>
@@ -198,10 +198,10 @@ sp<IMemory> StagefrightMetadataRetriever::getImageInternal(
 
     if (i == n) {
         ALOGE("image track not found.");
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         return NULL;
     }
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
 
     sp<MetaData> trackMeta = mExtractor->getTrackMetaData(i);
     if (!trackMeta) {
@@ -253,8 +253,10 @@ sp<IMemory> StagefrightMetadataRetriever::getImageInternal(
         }
     }
 
+    bool preferhw = property_get_bool(
+            "media.stagefright.thumbnail.prefer_hw_codecs", false);
     if (metaOnly) {
-        return FrameDecoder::getMetadataOnly(trackMeta, colorFormat, thumbnail, bitDepth);
+        return FrameDecoder::getMetadataOnly(trackMeta, colorFormat, preferhw, thumbnail, bitDepth);
     }
 
     sp<IMediaSource> source = mExtractor->getTrack(i);
@@ -264,8 +266,6 @@ sp<IMemory> StagefrightMetadataRetriever::getImageInternal(
         return NULL;
     }
 
-    bool preferhw = property_get_bool(
-            "media.stagefright.thumbnail.prefer_hw_codecs", false);
     uint32_t flags = preferhw ? 0 : MediaCodecList::kPreferSoftwareCodecs;
     Vector<AString> matchingCodecs;
 
@@ -310,9 +310,9 @@ sp<IMemory> StagefrightMetadataRetriever::getImageInternal(
                 }
                 return frame;
             }
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         }
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         ALOGV("%s failed to extract thumbnail, trying next decoder.", componentName.c_str());
     }
 
@@ -392,8 +392,10 @@ sp<IMemory> StagefrightMetadataRetriever::getFrameInternal(
         return NULL;
     }
 
+    bool preferhw = property_get_bool(
+        "media.stagefright.thumbnail.prefer_hw_codecs", false);
     if (metaOnly) {
-        return FrameDecoder::getMetadataOnly(trackMeta, colorFormat);
+        return FrameDecoder::getMetadataOnly(trackMeta, colorFormat, preferhw);
     }
 
     sp<IMediaSource> source = mExtractor->getTrack(i);
@@ -411,16 +413,14 @@ sp<IMemory> StagefrightMetadataRetriever::getFrameInternal(
         mAlbumArt = MediaAlbumArt::fromData(dataSize, data);
     }
 
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
     const char *mime;
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
     if (!trackMeta->findCString(kKeyMIMEType, &mime)) {
         ALOGE("video track has no mime information.");
         return NULL;
     }
 
-    bool preferhw = property_get_bool(
-            "media.stagefright.thumbnail.prefer_hw_codecs", false);
     uint32_t flags = preferhw ? 0 : MediaCodecList::kPreferSoftwareCodecs;
     sp<AMessage> format = new AMessage;
     status_t err = convertMetaDataToMessage(trackMeta, &format);
@@ -431,17 +431,17 @@ sp<IMemory> StagefrightMetadataRetriever::getFrameInternal(
 
     Vector<AString> matchingCodecs;
     MediaCodecList::findMatchingCodecs(
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
             mime,
             false, /* encoder */
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
             flags,
             format,
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
             &matchingCodecs);
 
     for (size_t i = 0; i < matchingCodecs.size(); ++i) {
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         const AString &componentName = matchingCodecs[i];
         sp<VideoFrameDecoder> decoder = new VideoFrameDecoder(componentName, trackMeta, source);
         if (decoder->init(timeUs, option, colorFormat) == OK) {
@@ -454,9 +454,9 @@ sp<IMemory> StagefrightMetadataRetriever::getFrameInternal(
                 }
                 return frame;
             }
-// QTI_BEGIN: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_BEGIN: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         }
-// QTI_END: 2015-06-12: Data: stagefright: Decode video thumbnail using MediaCodec
+// QTI_END: 2015-06-12: Video: stagefright: Decode video thumbnail using MediaCodec
         ALOGV("%s failed to extract frame, trying next decoder.", componentName.c_str());
     }
 

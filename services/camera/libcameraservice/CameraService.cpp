@@ -3786,8 +3786,10 @@ bool CameraService::evictClientIdByRemote(const wp<IBinder>& remote) {
                 ret = true;
             }
         }
+// QTI_BEGIN: 2018-06-12: Camera: Miscellaneous fixes in QDataCallback and binder death scenarios.
         //clear the evicted client list before acquring service lock again.
         evicted.clear();
+// QTI_END: 2018-06-12: Camera: Miscellaneous fixes in QDataCallback and binder death scenarios.
         // Reacquire mServiceLock
         mServiceLock.lock();
 

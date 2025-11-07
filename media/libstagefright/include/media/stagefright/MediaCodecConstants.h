@@ -926,6 +926,7 @@ inline constexpr char FEATURE_Roi[]                    = "region-of-interest";
 inline constexpr char FEATURE_SecurePlayback[]         = "secure-playback";
 inline constexpr char FEATURE_SpecialCodec[]           = "special-codec";
 inline constexpr char FEATURE_TunneledPlayback[]       = "tunneled-playback";
+inline constexpr char FEATURE_HeifRowModeDecode[]      = "heic-row-by-row-decode";
 
 // from MediaFormat.java
 inline constexpr char MIMETYPE_VIDEO_VP8[] = "video/x-vnd.on2.vp8";
