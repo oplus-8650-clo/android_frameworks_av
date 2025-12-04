@@ -166,9 +166,11 @@ protected:
 
     enum {
         kPortIndexInput  = 0,
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
         kPortIndexOutput = 1,
         kPortIndexInputExtradata = 2,
         kPortIndexOutputExtradata = 3
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
     };
 
     enum {
@@ -263,7 +265,9 @@ protected:
     sp<IOMX> mOMX;
     sp<IOMXNode> mOMXNode;
     int32_t mNodeGeneration;
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     sp<TAllocator> mAllocator[4];
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
 
     std::deque<TrackedFrame> mTrackedFrames; // render information for buffers sent to a window
     bool mAreRenderMetricsEnabled;
@@ -346,8 +350,10 @@ protected:
     } mVendorExtensionsStatus;
 
     status_t setCyclicIntraMacroblockRefresh(const sp<AMessage> &msg, int32_t mode);
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     virtual status_t allocateBuffersOnPort(OMX_U32 portIndex);
     virtual status_t freeBuffersOnPort(OMX_U32 portIndex);
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
     status_t freeBuffer(OMX_U32 portIndex, size_t i);
 
     status_t handleSetSurface(const sp<Surface> &surface);
@@ -360,7 +366,9 @@ protected:
             OMX_U32 *nBufferCount, OMX_U32 *nBufferSize,
             OMX_U32 *nMinUndequeuedBuffers, bool preregister);
     status_t allocateOutputMetadataBuffers();
+// QTI_BEGIN: 2018-07-06: Video: Stagefright: extend the function: submitOutputMetadataBuffer
     virtual status_t submitOutputMetadataBuffer();
+// QTI_END: 2018-07-06: Video: Stagefright: extend the function: submitOutputMetadataBuffer
     void signalSubmitOutputMetadataBufferIfEOS_workaround();
     status_t allocateOutputBuffersFromNativeWindow();
     status_t cancelBufferToNativeWindow(BufferInfo *info);
@@ -387,7 +395,9 @@ protected:
 
     status_t setComponentRole(bool isEncoder, const char *mime);
 
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     virtual status_t configureCodec(const char *mime, const sp<AMessage> &msg);
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
 
     status_t configureTunneledVideoPlayback(int32_t audioHwSync,
             const sp<ANativeWindow> &nativeWindow);
@@ -640,10 +650,12 @@ protected:
     virtual void setBFrames(OMX_VIDEO_PARAM_MPEG4TYPE *mpeg4type __unused) {}
 
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-04-02: Video: Stagefright: Addition of DS capability
     virtual bool getDSModeHint(const sp<AMessage>& msg __unused, int64_t timeUs __unused) {
        return false;
     }
 
+// QTI_END: 2018-04-02: Video: Stagefright: Addition of DS capability
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     sp<IOMXObserver> createObserver();
 

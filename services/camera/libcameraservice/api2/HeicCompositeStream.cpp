@@ -1934,9 +1934,9 @@ status_t HeicCompositeStream::initializeCodec(uint32_t width, uint32_t height,
 
     bool useGrid = false;
     AString hevcName;
-// QTI_BEGIN: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_BEGIN: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
     bool isHWEncWithoutGrid = false;
-// QTI_END: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_END: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
     bool isSizeSupported = isSizeSupportedByHeifEncoder(width, height,
             &mUseHeic, &useGrid, nullptr, &hevcName);
     if (!isSizeSupported) {
@@ -2048,25 +2048,25 @@ status_t HeicCompositeStream::initializeCodec(uint32_t width, uint32_t height,
     // This only serves as a hint to encoder when encoding is not real-time.
     outputFormat->setInt32(KEY_OPERATING_RATE, useGrid ? kGridOpRate : kNoGridOpRate);
 
-// QTI_BEGIN: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_BEGIN: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
     // BLOCK_MODEL is enabled only for HW encoder with surface input. Surface mode is used only
     // when grid is not used.
-// QTI_END: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
-// QTI_BEGIN: 2023-02-15: Camera: libcameraservice: Configure camcorder HEIC encoder session with
+// QTI_END: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
+// QTI_BEGIN: 2023-02-15: Core: libcameraservice: Configure camcorder HEIC encoder session with
     mCodec->getName(&hevcName);
-// QTI_END: 2023-02-15: Camera: libcameraservice: Configure camcorder HEIC encoder session with
-// QTI_BEGIN: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_END: 2023-02-15: Core: libcameraservice: Configure camcorder HEIC encoder session with
+// QTI_BEGIN: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
     isHWEncWithoutGrid = hevcName.startsWith("c2.qti.heic.encoder") && !useGrid;
-// QTI_END: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_END: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
 
     res = mCodec->configure(outputFormat, nullptr /*nativeWindow*/,
-// QTI_BEGIN: 2023-02-15: Camera: libcameraservice: Configure camcorder HEIC encoder session with
+// QTI_BEGIN: 2023-02-15: Core: libcameraservice: Configure camcorder HEIC encoder session with
             nullptr /*crypto*/,
             CONFIGURE_FLAG_ENCODE |
-// QTI_END: 2023-02-15: Camera: libcameraservice: Configure camcorder HEIC encoder session with
-// QTI_BEGIN: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_END: 2023-02-15: Core: libcameraservice: Configure camcorder HEIC encoder session with
+// QTI_BEGIN: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
             (isHWEncWithoutGrid ? CONFIGURE_FLAG_USE_BLOCK_MODEL : 0));
-// QTI_END: 2023-06-06: Camera: libcameraservice: Use BlockModel only for surface input
+// QTI_END: 2023-06-06: Video: libcameraservice: Use BlockModel only for surface input
     if (res != OK) {
         ALOGE("%s: Failed to configure codec: %s (%d)", __FUNCTION__,
                 strerror(-res), res);

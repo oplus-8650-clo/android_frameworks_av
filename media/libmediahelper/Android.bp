@@ -26,8 +26,10 @@ cc_library_headers {
     ],
 }
 
+// QTI_BEGIN: 2020-07-24: Audio: av: add support for lc3 codec
 cc_defaults {
     name: "libmedia_helper_defaults",
+// QTI_END: 2020-07-24: Audio: av: add support for lc3 codec
     double_loadable: true,
     srcs: [
         "AudioParameter.cpp",
@@ -64,20 +66,26 @@ cc_defaults {
         "test_com.android.media",
     ],
 }
+// QTI_BEGIN: 2020-07-24: Audio: av: add support for lc3 codec
 
 cc_library {
     name: "libmedia_helper",
     vendor_available: true,
     defaults: ["libmedia_helper_defaults"],
+// QTI_END: 2020-07-24: Audio: av: add support for lc3 codec
     min_sdk_version: "29",
+// QTI_BEGIN: 2020-07-24: Audio: av: add support for lc3 codec
 }
 
 cc_library {
     name: "libmedia_helper_ext",
     vendor: true,
     defaults: ["libmedia_helper_defaults"],
+// QTI_END: 2020-07-24: Audio: av: add support for lc3 codec
     host_supported: false,
+// QTI_BEGIN: 2020-07-24: Audio: av: add support for lc3 codec
     cflags: [
         "-D__AUDIO_VNDK_EXT__",
     ],
 }
+// QTI_END: 2020-07-24: Audio: av: add support for lc3 codec

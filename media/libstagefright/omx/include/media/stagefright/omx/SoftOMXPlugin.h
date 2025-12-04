@@ -21,16 +21,20 @@
 #include <media/stagefright/foundation/ABase.h>
 #include <media/hardware/OMXPluginBase.h>
 
+// QTI_BEGIN: 2021-10-04: Audio: media: Make software OMX plugins updatable
 #include <vector>
 
+// QTI_END: 2021-10-04: Audio: media: Make software OMX plugins updatable
 namespace android {
 
+// QTI_BEGIN: 2021-10-04: Audio: media: Make software OMX plugins updatable
 struct kComponent {
     const char *mName;
     const char *mLibNameSuffix;
     const char *mRole;
 };
 
+// QTI_END: 2021-10-04: Audio: media: Make software OMX plugins updatable
 struct SoftOMXPlugin : public OMXPluginBase {
     SoftOMXPlugin();
 
@@ -53,7 +57,9 @@ struct SoftOMXPlugin : public OMXPluginBase {
             Vector<String8> *roles);
 
 private:
+// QTI_BEGIN: 2021-10-04: Audio: media: Make software OMX plugins updatable
     std::vector<kComponent> mComponents;
+// QTI_END: 2021-10-04: Audio: media: Make software OMX plugins updatable
     DISALLOW_EVIL_CONSTRUCTORS(SoftOMXPlugin);
 };
 

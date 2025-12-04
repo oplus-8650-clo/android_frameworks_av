@@ -1159,6 +1159,7 @@ public:
     std::function<sp<Codec2Buffer>()> getAlloc() override;
 };
 
+// QTI_BEGIN: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
 class LinearMetadataOutputBuffers : public LinearOutputBuffers {
  public:
     LinearMetadataOutputBuffers(const char *componentName, const char *name = "1D-Meta-Output")
@@ -1167,6 +1168,7 @@ class LinearMetadataOutputBuffers : public LinearOutputBuffers {
     std::function<sp<Codec2Buffer>()> getAlloc() override;
 };
 
+// QTI_END: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
 class GraphicOutputBuffers : public FlexOutputBuffers {
 public:
     GraphicOutputBuffers(const char *componentName, const char *name = "2D-Output")

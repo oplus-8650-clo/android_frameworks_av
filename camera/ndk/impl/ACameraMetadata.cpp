@@ -272,11 +272,15 @@ ACameraMetadata::filterStreamConfigurations() {
     const int STREAM_IS_INPUT_OFFSET = 3;
     camera_metadata_entry entry = mData->find(ANDROID_SCALER_AVAILABLE_STREAM_CONFIGURATIONS);
     camera_metadata_entry depthEntry = mData->find(ANDROID_DEPTH_AVAILABLE_DEPTH_STREAM_CONFIGURATIONS);
+// QTI_BEGIN: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
     if ((entry.count == 0 && depthEntry.count == 0) ||
+// QTI_END: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
         (entry.count > 0 && (entry.count % 4 || entry.type != TYPE_INT32)) ||
         (depthEntry.count > 0 && (depthEntry.count % 4 || depthEntry.type != TYPE_INT32))) {
+// QTI_BEGIN: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
         ALOGE("%s: malformed available stream configuration key! scaler count %zu, type %d depth count %zu, type %d",
                 __FUNCTION__, entry.count, entry.type, depthEntry.count, depthEntry.type);
+// QTI_END: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
         return;
     }
 
@@ -314,13 +318,17 @@ ACameraMetadata::filterStreamConfigurations() {
     }
 
     Vector<int32_t> filteredDepthStreamConfigs;
+// QTI_BEGIN: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
     filteredDepthStreamConfigs.setCapacity(depthEntry.count);
+// QTI_END: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
 
+// QTI_BEGIN: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
     for (size_t i=0; i < depthEntry.count; i += STREAM_CONFIGURATION_SIZE) {
         int32_t format = depthEntry.data.i32[i + STREAM_FORMAT_OFFSET];
         int32_t width = depthEntry.data.i32[i + STREAM_WIDTH_OFFSET];
         int32_t height = depthEntry.data.i32[i + STREAM_HEIGHT_OFFSET];
         int32_t isInput = depthEntry.data.i32[i + STREAM_IS_INPUT_OFFSET];
+// QTI_END: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
         if (isInput == ANDROID_SCALER_AVAILABLE_STREAM_CONFIGURATIONS_INPUT) {
             // Hide input streams
             continue;
@@ -330,7 +338,9 @@ ACameraMetadata::filterStreamConfigurations() {
             format = AIMAGE_FORMAT_DEPTH_POINT_CLOUD;
         } else if (format == HAL_PIXEL_FORMAT_Y16) {
             format = AIMAGE_FORMAT_DEPTH16;
+// QTI_BEGIN: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
         } else if (format == HAL_PIXEL_FORMAT_RAW16) {
+// QTI_END: 2018-10-08: Camera: CameraNDK: Add RAW_DEPTH image format
             format = static_cast<int32_t>(AIMAGE_FORMAT_RAW_DEPTH);
         } else if (format == HAL_PIXEL_FORMAT_RAW10) {
             format = static_cast<int32_t>(AIMAGE_FORMAT_RAW_DEPTH10);

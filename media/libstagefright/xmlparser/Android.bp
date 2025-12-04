@@ -31,15 +31,19 @@ cc_library_shared {
         "libexpat",
         "liblog",
         "libstagefright_omx_utils",
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
         "libcutils"
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
     ],
 
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
     target: {
         vendor: {
             cflags: ["-D__ANDROID_VNDK__"],
         },
     },
 
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
     cflags: [
         "-Werror",
         "-Wall",

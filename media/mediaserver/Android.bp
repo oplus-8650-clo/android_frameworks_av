@@ -26,14 +26,18 @@ cc_library_static {
 }
 
 prebuilt_etc {
+// QTI_BEGIN: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
     name: "mediaserver.64bit_true.rc",
     src: "mediaserver.64bit_true.rc",
+// QTI_END: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
     sub_dir: "init/hw",
 }
 
 prebuilt_etc {
+// QTI_BEGIN: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
     name: "mediaserver.64bit_false.rc",
     src: "mediaserver.64bit_false.rc",
+// QTI_END: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
     sub_dir: "init/hw",
 }
 
@@ -107,8 +111,10 @@ mediaserver_cc_binary {
                 },
             },
             required: [
+// QTI_BEGIN: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
                 "mediaserver.64bit_true.rc",
                 "mediaserver.64bit_false.rc",
+// QTI_END: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
             ],
             init_rc: ["mediaserver_dynamic.rc"],
             conditions_default: {

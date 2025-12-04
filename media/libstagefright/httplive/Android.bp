@@ -30,7 +30,9 @@ cc_library {
 
     include_dirs: [
         "frameworks/av/media/libstagefright",
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
         "frameworks/av/media/libavextensions",
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
         "frameworks/av/media/module/mpeg2ts",
     ],
 
@@ -55,12 +57,16 @@ cc_library {
         "libmedia",
         "libmediandk",
         "libstagefright",
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
         "libstagefright_omx",
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
         "libstagefright_foundation",
         "libutils",
         "libhidlbase",
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
         "libhidlmemory",
         "android.hidl.memory@1.0",
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
         "android.hardware.cas@1.0",
         "android.hardware.cas.native@1.0",
         "android.hidl.allocator@1.0",

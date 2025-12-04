@@ -54,7 +54,9 @@ const int64_t LiveSession::kResumeThresholdUs = 100000LL;
 // default buffer underflow mark
 static const int kUnderflowMarkMs = 1000;  // 1 second
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
 struct LiveSession::BandwidthEstimator : public LiveSession::BandwidthBaseEstimator {
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     BandwidthEstimator();
 
     void addBandwidthMeasurement(size_t numBytes, int64_t delayUs);

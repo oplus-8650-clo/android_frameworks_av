@@ -569,6 +569,7 @@ status_t GraphicBufferSource::onInputBufferEmptied(codec_buffer_id bufferId, int
 
     if (haveAvailableBuffers_l()) {
         // Fill this codec buffer.
+// QTI_BEGIN: 2025-05-29: Video: libstagefright_bufferqueue_helper: Update EOS-buffer releasing mechanism
         if (!mEndOfStreamSent) {
             ALOGV("onInputBufferEmptied: buffer freed, feeding codec (available=%zu+%d, eos=%d)",
                     mAvailableBuffers.size(), mNumAvailableUnacquiredBuffers, mEndOfStream);
@@ -576,6 +577,7 @@ status_t GraphicBufferSource::onInputBufferEmptied(codec_buffer_id bufferId, int
         } else {
             releaseAllAvailableBuffers_l();
         }
+// QTI_END: 2025-05-29: Video: libstagefright_bufferqueue_helper: Update EOS-buffer releasing mechanism
     } else if (mEndOfStream && mStopTimeUs == -1) {
         // No frames available, but EOS is pending and no stop time, so use this buffer to
         // send that.
@@ -816,7 +818,9 @@ bool GraphicBufferSource::calculateCodecTimestamp_l(
 
     if (mCaptureFps > 0.
             && (mFps > 2 * mCaptureFps
+// QTI_BEGIN: 2018-04-30: Video: libstagefright: Allow HFR-60 in HAL-3 recording
             || mCaptureFps > mFps)) {
+// QTI_END: 2018-04-30: Video: libstagefright: Allow HFR-60 in HAL-3 recording
         // Time lapse or slow motion mode
         if (mPrevCaptureUs < 0LL) {
             // first capture
@@ -1401,9 +1405,11 @@ status_t GraphicBufferSource::setTimeLapseConfig(double fps, double captureFps) 
     if (captureFps > fps) {
         mSnapTimestamps = 1 == base::GetIntProperty(
                 "debug.stagefright.snap_timestamps", int64_t(0));
+// QTI_BEGIN: 2020-04-30: Video: GraphicBufferSource: Enable timestamp snapping in timelapse mode
     } else if (fps > 2 * captureFps) {
         // Timelapse mode
         mSnapTimestamps = true;
+// QTI_END: 2020-04-30: Video: GraphicBufferSource: Enable timestamp snapping in timelapse mode
     } else {
         mSnapTimestamps = false;
     }

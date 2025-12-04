@@ -128,7 +128,9 @@ bool AVUtils::mapAACProfileToAudioFormat(const sp<AMessage> &,  audio_format_t &
 }
 
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-02-13: Audio: av: update canOffloadAPE to canOffloadSteam
 bool AVUtils::canOffloadStream(const sp<MetaData> &) {
+// QTI_END: 2019-02-13: Audio: av: update canOffloadAPE to canOffloadSteam
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
    return true;
 }

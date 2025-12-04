@@ -30,9 +30,9 @@ filegroup {
         "StagefrightMetadataRetriever.cpp",
         "StagefrightRecorder.cpp",
         "TestPlayerStub.cpp",
-// QTI_BEGIN: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_BEGIN: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
         "mpctl/PerfBoost.cpp",
-// QTI_END: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_END: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
     ],
 }
 

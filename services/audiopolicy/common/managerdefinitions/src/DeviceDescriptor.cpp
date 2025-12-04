@@ -27,7 +27,9 @@
 #include "DeviceDescriptor.h"
 #include "TypeConverter.h"
 #include "HwModule.h"
+// QTI_BEGIN: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
 #include <unordered_set>
+// QTI_END: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
 
 namespace android {
 
@@ -386,13 +388,19 @@ DeviceVector DeviceVector::getDevicesFromTypes(const DeviceTypeSet& types) const
     if (types.empty()) {
         return devices;
     }
+// QTI_BEGIN: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
     std::unordered_set<audio_devices_t> foundType;
+// QTI_END: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
     for (size_t i = 0; i < size(); i++) {
+// QTI_BEGIN: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
         if (types.count(itemAt(i)->type()) != 0 && (foundType.count(itemAt(i)->type()) == 0)) {
+// QTI_END: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
             devices.add(itemAt(i));
+// QTI_BEGIN: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
             foundType.insert(itemAt(i)->type());
             ALOGV("DeviceVector::%s() for type %08x address %s",
                     __func__, itemAt(i)->type(), itemAt(i)->address().c_str());
+// QTI_END: 2025-07-14: Audio: audiopolicy: select last connected device from same type of devices
         }
     }
     return devices;

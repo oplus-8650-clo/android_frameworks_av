@@ -36,9 +36,9 @@
 #include <media/IAudioFlinger.h>
 #include <media/MediaMetricsItem.h>
 #include <media/TypeConverter.h>
-// QTI_BEGIN: 2018-04-05: Audio: SEEMP: add framework instrumentation
+// QTI_BEGIN: 2018-04-05: Secure Systems: SEEMP: add framework instrumentation
 #include <media/SeempLog.h>
-// QTI_END: 2018-04-05: Audio: SEEMP: add framework instrumentation
+// QTI_END: 2018-04-05: Secure Systems: SEEMP: add framework instrumentation
 
 #define WAIT_PERIOD_MS          10
 
@@ -447,9 +447,9 @@ status_t AudioRecord::start(AudioSystem::sync_event_t event, audio_session_t tri
 {
     const int64_t beginNs = systemTime();
     ALOGV("%s(%d): sync event %d trigger session %d", __func__, mPortId, event, triggerSession);
-// QTI_BEGIN: 2018-04-05: Audio: SEEMP: add framework instrumentation
+// QTI_BEGIN: 2018-04-05: Secure Systems: SEEMP: add framework instrumentation
     SEEMPLOG_RECORD(71,"");
-// QTI_END: 2018-04-05: Audio: SEEMP: add framework instrumentation
+// QTI_END: 2018-04-05: Secure Systems: SEEMP: add framework instrumentation
     AutoMutex lock(mLock);
 
     status_t status = NO_ERROR;

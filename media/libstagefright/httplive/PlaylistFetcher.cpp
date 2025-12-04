@@ -164,8 +164,10 @@ PlaylistFetcher::PlaylistFetcher(
       mNumRetriesForMonitorQueue(0),
       mStartup(true),
       mIDRFound(false),
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
       mLastIDRFound(false),
       mLastIDRTimeUs(-1),
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
       mSeekMode(LiveSession::kSeekModeExactPosition),
       mTimeChangeSignaled(false),
       mNextPTSTimeUs(-1LL),
@@ -176,7 +178,9 @@ PlaylistFetcher::PlaylistFetcher(
       mFirstPTSValid(false),
       mFirstTimeUs(-1LL),
       mVideoBuffer(new AnotherPacketSource(NULL)),
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
       mAudioBuffer(new AnotherPacketSource(NULL)),
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
       mSampleAesKeyItemChanged(false),
       mThresholdRatio(-1.0f),
       mDownloadState(new DownloadState()),
@@ -773,9 +777,13 @@ status_t PlaylistFetcher::onStart(const sp<AMessage> &msg) {
     if (startTimeUs >= 0 || mSeekMode == LiveSession::kSeekModeNextSample) {
         mStartup = true;
         mIDRFound = false;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         mLastIDRFound = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         mVideoBuffer->clear();
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         mAudioBuffer->clear();
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     }
 
     if (startTimeUs >= 0) {
@@ -1225,7 +1233,9 @@ bool PlaylistFetcher::initDownloadState(
                     // properties in extractAndQueueAccessUnitsFromTs.
                     sp<ABuffer> buffer = new ABuffer(0);
                     mSeqNumber = lastSeqNumberInPlaylist;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                     mLastIDRTimeUs = -1;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                     extractAndQueueAccessUnitsFromTs(buffer);
                 }
                 notifyError(ERROR_END_OF_STREAM);
@@ -1324,9 +1334,13 @@ bool PlaylistFetcher::initDownloadState(
             mStartTimeUs = 0;
             mFirstPTSValid = false;
             mIDRFound = false;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
             mLastIDRFound = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
             mVideoBuffer->clear();
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
             mAudioBuffer->clear();
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         }
     }
 
@@ -1375,7 +1389,9 @@ void PlaylistFetcher::onDownloadNext() {
     // block-wise download
     bool shouldPause = false;
     ssize_t bytesRead;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     mLastIDRTimeUs = -1;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     do {
         int64_t startUs = ALooper::GetNowUs();
         bytesRead = mHTTPDownloader->fetchBlock(
@@ -1549,10 +1565,12 @@ void PlaylistFetcher::onDownloadNext() {
         }
     }
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     if (checkSwitchBandwidth()) {
         return;
     }
 
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     ++mSeqNumber;
 
     // if adapting, pause after found the next starting point
@@ -1817,7 +1835,9 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                 mStartTimeUsNotify->setInt32("what", kWhatStartedAt);
                 mStartTimeUsNotify->setString("uri", mURI);
                 mIDRFound = false;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 mLastIDRFound = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 mSegmentStartTimeUs = -1;
                 return -EAGAIN;
             }
@@ -1825,19 +1845,27 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
     }
 
     status_t err = OK;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     mLastIDRFound = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
     bool hasAvcOrHevcSource = false;
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
     for (size_t i = mPacketSources.size(); i > 0;) {
         i--;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         bool isAudio = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         sp<AnotherPacketSource> packetSource = mPacketSources.valueAt(i);
 
         const LiveSession::StreamType stream = mPacketSources.keyAt(i);
         if (stream == LiveSession::STREAMTYPE_SUBTITLES) {
             ALOGE("MPEG2 Transport streams do not contain subtitles.");
             return ERROR_MALFORMED;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         } else if (stream == LiveSession::STREAMTYPE_AUDIO) {
             isAudio = true;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         }
 
         const char *key = LiveSession::getKeyForStream(stream);
@@ -1853,15 +1881,23 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
 
         const char *mime;
         sp<MetaData> format  = source->getFormat();
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
         bool isAvc = false;
         if (format != NULL && format->findCString(kKeyMIMEType, &mime)) {
             isAvc = !strcasecmp(mime, MEDIA_MIMETYPE_VIDEO_AVC);
         }
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
 
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
         if (isAvc) {
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
             hasAvcOrHevcSource = true;
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         }
 
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
         sp<ABuffer> accessUnit;
         status_t finalResult;
         while (source->hasBufferAvailable(&finalResult)
@@ -1873,7 +1909,9 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
             if (mStartup) {
                 bool startTimeReached = isStartTimeReached(timeUs);
 
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 if (!startTimeReached) {
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                     // buffer up to the closest preceding IDR frame in the next segement,
                     // or the closest succeeding IDR frame after the exact position
                     FSLOGV(stream, "timeUs(%lld)-mStartTimeUs(%lld)=%lld, mIDRFound=%d",
@@ -1881,19 +1919,28 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                             (long long)mStartTimeUs,
                             (long long)timeUs - mStartTimeUs,
                             mIDRFound);
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
                     if (isAvc) {
                         if (IsIDR(accessUnit->data(), accessUnit->size())) {
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
                             mVideoBuffer->clear();
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                             FSLOGV(stream, "found IDR, clear mVideoBuffer, save IDR timestamp");
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                             mIDRFound = true;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                             mLastIDRTimeUs = timeUs;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                         }
                         if (mIDRFound && mStartTimeUsRelative && !startTimeReached) {
                             mVideoBuffer->queueAccessUnit(accessUnit);
                             FSLOGV(stream, "saving AVC video AccessUnit");
                         }
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                         continue;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                     }
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
 
                     // only when current ts segment contains avc/hevc source, IDR frame can be found
                     // caching audio buffers from last video preceding IDR to seek time. If video
@@ -1901,7 +1948,11 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                     // buffers and start from IDR pisition (new start time). If audio reached seek
                     // time before last preceding IDR is found, the redundant audio buffers will be
                     // discared when queuing buffers to LiveSession
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
                     if (isAudio && hasAvcOrHevcSource) {
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                         if (!mLastIDRFound) {
                             mAudioBuffer->queueAccessUnit(accessUnit);
                             FSLOGV(stream, "saving audio AccessUnit");
@@ -1910,20 +1961,34 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                                     reach IDR time, clear mAudioBuffer");
                             mAudioBuffer->clear();
                         }
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                         continue;
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
                     } else if (isAudio) {
                         continue;
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
                     }
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 } else {
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
                     if (isAvc && !mIDRFound) {
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
                         if (isAvc && !IsIDR(accessUnit->data(), accessUnit->size())) {
                             continue;
                         }
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
 
+// QTI_BEGIN: 2018-09-04: Video: HLS: fix some seek issues
                         mIDRFound = true;
                         mLastIDRTimeUs = timeUs;
                     }
+// QTI_END: 2018-09-04: Video: HLS: fix some seek issues
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
                     if (isAvc && mIDRFound) {
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                         mLastIDRFound = true;
                         // last preceding IDR found, set mStartTimeUs to this IDR time, the new
                         // start time will affect audio stream checking if it has reached start time
@@ -1933,6 +1998,7 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                             mStartTimeUs = mLastIDRTimeUs;
                         }
                     }
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 }
             }
 
@@ -1969,7 +2035,9 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
             }
 
             if (stream == LiveSession::STREAMTYPE_VIDEO) {
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 const bool discard = false;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
                 status_t status;
                 while (mVideoBuffer->hasBufferAvailable(&status)) {
                     sp<ABuffer> videoBuffer;
@@ -1981,6 +2049,7 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                     FSLOGV(stream, "queueAccessUnit (saved), timeUs=%lld",
                             (long long)bufferTimeUs);
                 }
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
             } else if (stream == LiveSession::STREAMTYPE_AUDIO) {
                 const bool discard = false;
                 status_t status;
@@ -1996,6 +2065,7 @@ status_t PlaylistFetcher::extractAndQueueAccessUnitsFromTs(const sp<ABuffer> &bu
                                 (long long)bufferTimeUs);
                     }
                 }
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
             } else if (stream == LiveSession::STREAMTYPE_METADATA && !mHasMetadata) {
                 mHasMetadata = true;
                 sp<AMessage> notify = mNotify->dup();

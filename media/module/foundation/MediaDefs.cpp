@@ -143,7 +143,10 @@ const char *MEDIA_MIMETYPE_TEXT_CEA_608 = "text/cea-608";
 const char *MEDIA_MIMETYPE_TEXT_CEA_708 = "text/cea-708";
 const char *MEDIA_MIMETYPE_DATA_TIMED_ID3 = "application/x-id3v4";
 
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #ifdef __ANDROID_VNDK_EXT__
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 const char *MEDIA_MIMETYPE_VIDEO_WMV = "video/x-ms-wmv";
 const char *MEDIA_MIMETYPE_VIDEO_WMV_VC1 = "video/wvc1";
 const char *MEDIA_MIMETYPE_AUDIO_WMA_PRO = "audio/x-ms-wma-pro";
@@ -156,7 +159,11 @@ const char *MEDIA_MIMETYPE_VIDEO_DIVX4 = "video/divx4";
 const char *MEDIA_MIMETYPE_CONTAINER_MPEG2 = "video/mp2";
 const char *MEDIA_MIMETYPE_CONTAINER_3G2 = "video/3g2";
 const char *MEDIA_MIMETYPE_AUDIO_DTS_LBR = "audio/dts-lbr";
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2022-02-21: Audio: media: add support for "amr-wb+" mime
 const char *MEDIA_MIMETYPE_AUDIO_QC_AMR_WB_PLUS = "audio/amr-wb-plus";
+// QTI_END: 2022-02-21: Audio: media: add support for "amr-wb+" mime
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 const char *MEDIA_MIMETYPE_AUDIO_AIFF = "audio/x-aiff";
 const char *MEDIA_MIMETYPE_AUDIO_APE = "audio/x-ape";
 const char *MEDIA_MIMETYPE_CONTAINER_QCAMR_NB = "audio/qc-amr";
@@ -177,5 +184,8 @@ const char *MEDIA_MIMETYPE_CONTAINER_DFF = "audio/x-dff"; // For DFF or DIF clip
 const char *MEDIA_MIMETYPE_AUDIO_DSD = "audio/dsd";
 const char *MEDIA_MIMETYPE_CONTAINER_MOV = "video/quicktime"; //mov clip
 const char *MEDIA_MIMETYPE_VIDEO_TME = "video/tme";
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #endif
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
 }  // namespace android

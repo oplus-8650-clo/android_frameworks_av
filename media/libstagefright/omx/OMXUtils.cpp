@@ -27,9 +27,15 @@
 #include <media/stagefright/MediaErrors.h>
 #include <media/hardware/HardwareAPI.h>
 #include <system/graphics-base.h>
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #ifdef __ANDROID_VNDK_EXT__
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 #include <media/stagefright/ExtendedMediaDefs.h>
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #endif
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
 
 namespace android {
 
@@ -121,7 +127,10 @@ const char *GetComponentRole(bool isEncoder, const char *mime) {
     };
 
     static const MimeToRole kMimeToRole[] = {
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #ifdef __ANDROID_VNDK_EXT__
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
         { MEDIA_MIMETYPE_AUDIO_EVRC,
           "audio_decoder.evrchw", "audio_encoder.evrc" },
         { MEDIA_MIMETYPE_AUDIO_QCELP,
@@ -148,8 +157,12 @@ const char *GetComponentRole(bool isEncoder, const char *mime) {
           "video_decoder.hevc", "video_encoder.hevc" },
         { MEDIA_MIMETYPE_AUDIO_AMR_WB_PLUS,
             "audio_decoder.amrwbplus", "audio_encoder.amrwbplus" },
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2022-02-21: Audio: media: add support for "amr-wb+" mime
         { MEDIA_MIMETYPE_AUDIO_QC_AMR_WB_PLUS,
             "audio_decoder.amrwbplus", "audio_encoder.amrwbplus" },
+// QTI_END: 2022-02-21: Audio: media: add support for "amr-wb+" mime
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
         { MEDIA_MIMETYPE_AUDIO_EVRC,
             "audio_decoder.evrchw", "audio_encoder.evrc" },
         { MEDIA_MIMETYPE_AUDIO_QCELP,
@@ -158,7 +171,10 @@ const char *GetComponentRole(bool isEncoder, const char *mime) {
             "video_decoder.mpeg4", NULL },
         { MEDIA_MIMETYPE_VIDEO_TME,
           NULL, "video_encoder.tme" },
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #endif
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
         { MEDIA_MIMETYPE_AUDIO_MPEG,
             "audio_decoder.mp3", "audio_encoder.mp3" },
         { MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_I,
@@ -197,19 +213,37 @@ const char *GetComponentRole(bool isEncoder, const char *mime) {
             "audio_decoder.raw", "audio_encoder.raw" },
         { MEDIA_MIMETYPE_VIDEO_DOLBY_VISION,
             "video_decoder.dolby-vision", "video_encoder.dolby-vision" },
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 #ifdef QTI_FLAC_DECODER
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #ifdef __ANDROID_VNDK_EXT__
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
         { MEDIA_MIMETYPE_AUDIO_FLAC,
             "audio_decoder.flac", NULL },
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #endif
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 #else
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
         { MEDIA_MIMETYPE_AUDIO_FLAC,
             "audio_decoder.flac", "audio_encoder.flac" },
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
 #endif
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #ifdef __ANDROID_VNDK_EXT__
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
+// QTI_BEGIN: 2018-04-13: Video: media: Add new Component Roles
         { MEDIA_MIMETYPE_AUDIO_DSD,
             "audio_decoder.dsd", NULL },
+// QTI_END: 2018-04-13: Video: media: Add new Component Roles
+// QTI_BEGIN: 2018-06-21: Video: media: VNDK ABI compliance
 #endif
+// QTI_END: 2018-06-21: Video: media: VNDK ABI compliance
         { MEDIA_MIMETYPE_AUDIO_MSGSM,
             "audio_decoder.gsm", "audio_encoder.gsm" },
         { MEDIA_MIMETYPE_VIDEO_MPEG2,

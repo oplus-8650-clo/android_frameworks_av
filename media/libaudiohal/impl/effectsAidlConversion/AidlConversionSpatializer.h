@@ -36,13 +36,13 @@ class AidlConversionSpatializer : public EffectConversionHelperAidl {
     bool isSpatializerParameterSupported();
     status_t setParameter(utils::EffectParamReader& param) override;
     status_t getParameter(utils::EffectParamWriter& param) override;
-// QTI_BEGIN: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_BEGIN: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
     template <typename SpatializerType>
     bool isValidRange(const SpatializerType& spatializer) const {
         return inRange<::aidl::android::hardware::audio::effect::Range::spatializer>
                                                     (spatializer, mDesc.capability);
     }
-// QTI_END: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_END: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
 };
 
 }  // namespace effect

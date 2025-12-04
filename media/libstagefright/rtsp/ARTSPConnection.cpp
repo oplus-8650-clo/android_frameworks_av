@@ -172,11 +172,15 @@ bool ARTSPConnection::ParseURL(
             pass->setTo(userPass, colonPos + 1, userPass.size() - colonPos - 1);
         }
     }
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
 #ifndef __NO_AVEXTENSIONS__
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
     const char *colonPos = AVMediaServiceUtils::get()->parseURL(host);
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
 #else
     const char *colonPos = strchr(host->c_str(), ':');
 #endif
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
     if (colonPos != NULL) {
         unsigned long x;
         if (!ParseSingleUnsignedLong(colonPos + 1, &x) || x >= 65536) {

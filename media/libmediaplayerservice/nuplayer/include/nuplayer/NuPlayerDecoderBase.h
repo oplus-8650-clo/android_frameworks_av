@@ -46,8 +46,10 @@ struct NuPlayer::DecoderBase : public AHandler {
     void signalFlush();
     void signalResume(bool notifyComplete);
     void initiateShutdown();
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     void logLatencyBegin(std::string strId);
     void logLatencyEnd(std::string strId);
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 
     virtual sp<AMessage> getStats() {
 // QTI_BEGIN: 2015-06-10: Video: NuPlayer: Enhance dumpsys statistics
@@ -90,13 +92,17 @@ protected:
 
     sp<AMessage> mNotify;
     int32_t mBufferGeneration;
+// QTI_BEGIN: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
     int64_t mRequestInputBufferDelay;
+// QTI_END: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
     bool mPaused;
 // QTI_BEGIN: 2015-06-10: Video: NuPlayer: Enhance dumpsys statistics
     sp<AMessage> mStats;
 // QTI_END: 2015-06-10: Video: NuPlayer: Enhance dumpsys statistics
     Mutex mStatsLock;
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     std::unordered_map<std::string, std::chrono::time_point<std::chrono::system_clock>> mLatencyStartTime;
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 
 private:
     enum {

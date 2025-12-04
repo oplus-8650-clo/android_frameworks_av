@@ -62,7 +62,9 @@ NuPlayer::DecoderPassThrough::~DecoderPassThrough() {
 
 void NuPlayer::DecoderPassThrough::onConfigure(const sp<AMessage> &format) {
     ALOGV("[%s] onConfigure", mComponentName.c_str());
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     logLatencyBegin("audioStartDecPassThrough");
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     mCachedBytes = 0;
     mPendingBuffersToDrain = 0;
     mReachedEOS = false;
@@ -82,7 +84,9 @@ void NuPlayer::DecoderPassThrough::onConfigure(const sp<AMessage> &format) {
     if (err != OK) {
         handleError(err);
     }
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     logLatencyEnd("audioStartDecPassThrough");
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 }
 
 void NuPlayer::DecoderPassThrough::onSetParameters(const sp<AMessage> &/*params*/) {

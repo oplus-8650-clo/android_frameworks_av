@@ -86,9 +86,11 @@ enum output_format {
     /* Opus data in a OGG container */
     OUTPUT_FORMAT_OGG = 11,
 
+// QTI_BEGIN: 2018-03-05: Audio: frameworks/av: Fixed QCELP format ID
     OUTPUT_FORMAT_QCP = 20,
     OUTPUT_FORMAT_WAVE = 21,
 
+// QTI_END: 2018-03-05: Audio: frameworks/av: Fixed QCELP format ID
     OUTPUT_FORMAT_LIST_END // must be last - used to validate format type
 };
 
@@ -107,8 +109,12 @@ enum audio_encoder {
     AUDIO_ENCODER_QCELP = 11,
     AUDIO_ENCODER_LPCM = 12,
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-05-13: Audio: av: Changes to support MPEGH Encoder
     AUDIO_ENCODER_MPEGH = 13,
+// QTI_END: 2019-05-13: Audio: av: Changes to support MPEGH Encoder
+// QTI_BEGIN: 2023-02-28: Audio: media: add new enum for HE-AAC V2
     AUDIO_ENCODER_HE_AAC_V2 = 14,
+// QTI_END: 2023-02-28: Audio: media: add new enum for HE-AAC V2
 
     AUDIO_ENCODER_LIST_END // must be the last - used to validate the audio encoder type
 };

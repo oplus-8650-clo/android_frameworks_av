@@ -27,7 +27,9 @@
 #include <atomic>
 #include <list>
 #include <numeric>
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 #include <regex>
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 #include <thread>
 #include <chrono>
 
@@ -94,11 +96,13 @@ constexpr size_t kSmoothnessFactor = 4;
 // than making it non-blocking. Do not change this value.
 const static size_t kDequeueTimeoutNs = 0;
 
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 // If app goes into background, decoding paused. we have WA logic in HAL to sleep some actions.
 // This value is to monitor if decoding is paused then we can signal a new empty work to HAL
 // after app resume to foreground to notify HAL something
 const static uint64_t kPipelinePausedTimeoutMs = 500;
 
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 static bool areRenderMetricsEnabled() {
     std::string v = GetServerConfigurableFlag("media_native", "render_metrics_enabled", "false");
     return v == "true";
@@ -301,8 +305,12 @@ CCodecBufferChannel::CCodecBufferChannel(
       mRenderingDepth(3u),
       mMetaMode(MODE_NONE),
       mInputMetEos(false),
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
       mLastInputBufferAvailableTs(0u),
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
+// QTI_BEGIN: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
       mIsHWDecoder(false),
+// QTI_END: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
       mSendEncryptedInfoBuffer(false) {
     {
         Mutexed<Input>::Locked input(mInput);
@@ -350,8 +358,10 @@ void CCodecBufferChannel::setComponent(
     std::atomic_store(&mComponent, component);
     mComponentName = component->getName() + StringPrintf("#%d", int(uintptr_t(component.get()) % 997));
     mName = mComponentName.c_str();
+// QTI_BEGIN: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
     std::regex pattern{"c2\\.qti\\..*\\.decoder.*"};
     mIsHWDecoder = std::regex_match(mComponentName, pattern);
+// QTI_END: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
 }
 
 status_t CCodecBufferChannel::setInputSurface(
@@ -1052,6 +1062,7 @@ status_t CCodecBufferChannel::queueSecureInputBuffer(
     return queueInputBufferInternal(buffer, block, bufferSize);
 }
 
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 void CCodecBufferChannel::queueDummyWork() {
     std::unique_ptr<C2Work> work(new C2Work);
     // WA: signal a empty work to HAL to trigger specific event, but totally drop the work
@@ -1061,6 +1072,7 @@ void CCodecBufferChannel::queueDummyWork() {
     (void)mComponent->queue(&items);
 }
 
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 status_t CCodecBufferChannel::queueSecureInputBuffers(
         const sp<MediaCodecBuffer> &buffer,
         bool secure,
@@ -1202,11 +1214,16 @@ void CCodecBufferChannel::feedInputBufferIfAvailable() {
         return;
     }
     feedInputBufferIfAvailableInternal();
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 
     // limit this WA to qc hw decoder only
     // if feedInputBufferIfAvailableInternal() successfully (has available input buffer),
     // mLastInputBufferAvailableTs would be updated. otherwise, not input buffer available
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
+// QTI_BEGIN: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
     if (mIsHWDecoder) {
+// QTI_END: 2022-04-26: Video: CCodec: Use pipelineRoom only for HW decoder
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
         std::lock_guard<std::mutex> tsLock(mTsLock);
         uint64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
                 PipelineWatcher::Clock::now().time_since_epoch()).count();
@@ -1216,6 +1233,7 @@ void CCodecBufferChannel::feedInputBufferIfAvailable() {
             queueDummyWork();
         }
     }
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 }
 
 void CCodecBufferChannel::feedInputBufferIfAvailableInternal() {
@@ -1268,6 +1286,7 @@ void CCodecBufferChannel::feedInputBufferIfAvailableInternal() {
                 break;
             }
         }
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
 
         {
             std::lock_guard<std::mutex> tsLock(mTsLock);
@@ -1275,6 +1294,7 @@ void CCodecBufferChannel::feedInputBufferIfAvailableInternal() {
                     PipelineWatcher::Clock::now().time_since_epoch()).count();
         }
 
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
         ALOGV("[%s] new input index = %zu [%p]", mName, index, inBuffer.get());
         mCallback->onInputBufferAvailable(index, inBuffer);
     }
@@ -1750,7 +1770,9 @@ status_t CCodecBufferChannel::start(
     C2PortActualDelayTuning::output outputDelay(0);
     C2ActualPipelineDelayTuning pipelineDelay(0);
     C2SecureModeTuning secureMode(C2Config::SM_UNPROTECTED);
+// QTI_BEGIN: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
     C2StreamPictureSizeInfo::input picSize;
+// QTI_END: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
 
     c2_status_t err = std::atomic_load(&mComponent)->query(
             {
@@ -1763,7 +1785,9 @@ status_t CCodecBufferChannel::start(
                 &pipelineDelay,
                 &outputDelay,
                 &secureMode,
+// QTI_BEGIN: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
                 &picSize,
+// QTI_END: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
             },
             {},
             C2_DONT_BLOCK,
@@ -1776,18 +1800,24 @@ status_t CCodecBufferChannel::start(
         return UNKNOWN_ERROR;
     }
 
+// QTI_BEGIN: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
     bool isHeic = mComponent->getName().find(".heic") != std::string::npos;
+// QTI_END: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
     uint32_t inputDelayValue = inputDelay ? inputDelay.value : 0;
     uint32_t pipelineDelayValue = pipelineDelay ? pipelineDelay.value : 0;
     uint32_t outputDelayValue = outputDelay ? outputDelay.value : 0;
 
     size_t numInputSlots = inputDelayValue + pipelineDelayValue + kSmoothnessFactor;
+// QTI_BEGIN: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
     long resolution = (long) picSize.width * picSize.height;
     long resolution4K = 4096 * 2048;
     if (isHeic && (resolution > resolution4K)) {
         numInputSlots = inputDelayValue + pipelineDelayValue;
     }
+// QTI_END: 2024-09-04: Video: media: Restrict numInputSlots for heic in case of higher resolution
+// QTI_BEGIN: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
     size_t numOutputSlots = outputDelayValue + kSmoothnessFactor;
+// QTI_END: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
 
     // TODO: get this from input format
     bool secure = std::atomic_load(&mComponent)->getName().find(".secure") != std::string::npos;
@@ -1975,13 +2005,19 @@ status_t CCodecBufferChannel::start(
             Mutexed<OutputSurface>::Locked output(mOutputSurface);
             maxDequeueCount = output->maxDequeueBuffers = numOutputSlots +
                     reorderDepth.value + mRenderingDepth;
+// QTI_BEGIN: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
             if (!secure) {
+// QTI_END: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
+// QTI_BEGIN: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
                 output->maxDequeueBuffers += numInputSlots;
             }
+// QTI_END: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
             outputSurface = output->surface ?
                     output->surface->getIGraphicBufferProducer() : nullptr;
             if (outputSurface) {
+// QTI_BEGIN: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
                 ALOGD("[%s] start: max output delay %u", mName, output->maxDequeueBuffers);
+// QTI_END: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
                 (void)SurfaceCallbackHandler::GetInstance();
                 output->surface->setMaxDequeuedBufferCount(output->maxDequeueBuffers);
             }
@@ -2111,6 +2147,7 @@ status_t CCodecBufferChannel::start(
                 output->buffers.reset(new RawGraphicOutputBuffers(mName));
             }
         } else {
+// QTI_BEGIN: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
             // TODO(PC): do this decision based on the secure_mode config being SM_PROTECTED?
             bool secure = mComponent->getName().find(".secure") != std::string::npos;
             if (secure) {
@@ -2119,6 +2156,7 @@ status_t CCodecBufferChannel::start(
             } else {
                 output->buffers.reset(new LinearOutputBuffers(mName));
             }
+// QTI_END: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
         }
         output->buffers->setFormat(outputFormat);
 
@@ -2193,8 +2231,12 @@ status_t CCodecBufferChannel::start(
     // mOutputBuffers are initialized to make sure that lingering callbacks
     // about buffers from the previous generation do not interfere with the
     // newly initialized pipeline capacity.
+// QTI_BEGIN: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
     {
+// QTI_END: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
+// QTI_BEGIN: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
         ALOGD("[%s] start: updating output delay %u", mName, outputDelayValue);
+// QTI_END: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
         Mutexed<PipelineWatcher>::Locked watcher(mPipelineWatcher);
         watcher->inputDelay(inputDelayValue)
                 .pipelineDelay(pipelineDelayValue)
@@ -2320,12 +2362,14 @@ status_t CCodecBufferChannel::requestInitialInputBuffers(
         clientInputBuffers.erase(minIndex);
     }
 
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
     if (!clientInputBuffers.empty()) {
         std::lock_guard<std::mutex> tsLock(mTsLock);
         mLastInputBufferAvailableTs = std::chrono::duration_cast<std::chrono::milliseconds>(
                 PipelineWatcher::Clock::now().time_since_epoch()).count();
     }
 
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
     for (const auto &[index, buffer] : clientInputBuffers) {
         mCallback->onInputBufferAvailable(index, buffer);
     }
@@ -2513,16 +2557,20 @@ bool CCodecBufferChannel::handleWork(
 
     if (work->result == C2_OK){
         notifyClient = true;
+// QTI_BEGIN: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
     } else if (work->result == C2_OMITTED) {
         ALOGV("[%s] empty work returned; omitted.", mName);
         return false; // omitted
+// QTI_END: 2021-03-29: Video: [WA] Codec2: queue a empty work to HAL to wake up allocation thread
     } else if (work->result == C2_NOT_FOUND) {
+// QTI_BEGIN: 2021-08-24: Video: codec2: a workaround to solve backward compatibility issue
         if (work->input.flags & C2FrameData::FLAG_DROP_FRAME) {
             // NOTE: This is to solve backward compatibility issue of queueDummyWork. If no HAL fix,
             //       we will receive C2_NOT_FOUND here and then issue fatal error to MediaCodec
             ALOGV("[%s] empty work returned; omitted.", mName);
             return false; // omitted
         }
+// QTI_END: 2021-08-24: Video: codec2: a workaround to solve backward compatibility issue
         ALOGD("[%s] flushed work; ignored.", mName);
     } else {
         // C2_OK and C2_NOT_FOUND are the only results that we accept for processing
@@ -2627,7 +2675,9 @@ bool CCodecBufferChannel::handleWork(
                 if (param->forOutput()) {
                     C2PortActualDelayTuning::output outputDelay;
                     if (outputDelay.updateFrom(*param)) {
+// QTI_BEGIN: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
                         ALOGD("[%s] onWorkDone: updating output delay %u",
+// QTI_END: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
                               mName, outputDelay.value);
                         (void)mPipelineWatcher.lock()->outputDelay(outputDelay.value);
                         newOutputDelay = outputDelay.value;
@@ -2785,10 +2835,12 @@ bool CCodecBufferChannel::handleWork(
             outBuffer->meta()->setInt64("timeUs", timestamp.peek());
             outBuffer->meta()->setInt32("flags", BUFFER_FLAG_CODEC_CONFIG);
             ALOGV("[%s] onWorkDone: csd index = %zu [%p]", mName, index, outBuffer.get());
+// QTI_BEGIN: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
             if (outputFormat) {
                 ALOGD("[%s] sending CSD : output format changed to %s",
                       mName, outputFormat->debugString().c_str());
             }
+// QTI_END: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
 
             // TRICKY: we want popped buffers reported in order, so sending
             // the callback while holding the lock here. This assumes that
@@ -2805,10 +2857,14 @@ bool CCodecBufferChannel::handleWork(
 
     bool drop = false;
     if (worklet->output.flags & C2FrameData::FLAG_DROP_FRAME) {
+// QTI_BEGIN: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
         ALOGV("[%s] onWorkDone: drop output buffer (%lld)",
               mName, work->input.ordinal.frameIndex.peekull());
+// QTI_END: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
         drop = true;
+// QTI_BEGIN: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
         notifyClient = false;
+// QTI_END: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
     }
 
     // Workaround: if C2FrameData::FLAG_DROP_FRAME is not implemented in
@@ -2817,7 +2873,9 @@ bool CCodecBufferChannel::handleWork(
         flags |= BUFFER_FLAG_DECODE_ONLY;
     }
 
+// QTI_BEGIN: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
     if (notifyClient && !buffer && !flags) {
+// QTI_END: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
         if (mTunneled && drop && outputFormat) {
             if (mOutputFormat != outputFormat) {
                 ALOGV("[%s] onWorkDone: Keep tunneled, drop frame with format change (%lld)",
@@ -2856,11 +2914,15 @@ bool CCodecBufferChannel::handleWork(
             return false;
         }
         output->buffers->pushToStash(
+// QTI_BEGIN: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
                 buffer,
+// QTI_END: 2021-05-07: Video: codec2: don't notify client when buffer is marked drop
                 notifyClient,
                 timestamp.peek(),
                 flags,
+// QTI_BEGIN: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
                 (initData == nullptr ? outputFormat : nullptr),
+// QTI_END: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
                 worklet->output.ordinal);
     }
     sendOutputBuffers();
@@ -3032,9 +3094,13 @@ PipelineWatcher::Clock::duration CCodecBufferChannel::elapsed() {
     size_t outputDelay = mOutput.lock()->outputDelay;
     {
         Mutexed<Input>::Locked input(mInput);
+// QTI_BEGIN: 2021-08-17: Video: codec2: add smoothfactor when checking n-th work
         n = input->inputDelay + input->pipelineDelay + outputDelay + kSmoothnessFactor;
+// QTI_END: 2021-08-17: Video: codec2: add smoothfactor when checking n-th work
+// QTI_BEGIN: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
         ALOGD("[%s] DEBUG: elapsed: n=%zu [in=%u pipeline=%u out=%zu]", mName, n,
                 input->inputDelay, input->pipelineDelay, outputDelay);
+// QTI_END: 2021-04-27: Video: CCodec: Revert Codec2 buffer count optimizations
     }
     return mPipelineWatcher.lock()->elapsed(PipelineWatcher::Clock::now(), n);
 }

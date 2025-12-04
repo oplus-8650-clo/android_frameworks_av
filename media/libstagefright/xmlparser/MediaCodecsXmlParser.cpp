@@ -17,7 +17,9 @@
 // QTI_BEGIN: 2022-10-06: Video: Merge "Revert "Dynamic Video Framework Log Enablement"" into t-keystone-qcom-dev
 //#define LOG_NDEBUG 0
 // QTI_END: 2022-10-06: Video: Merge "Revert "Dynamic Video Framework Log Enablement"" into t-keystone-qcom-dev
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
 #define PROP_VALUE_MAX 92
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
 #define LOG_TAG "MediaCodecsXmlParser"
 
 #include <media/stagefright/xmlparser/MediaCodecsXmlParser.h>
@@ -42,7 +44,9 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
 #include <cutils/properties.h>
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
 
 namespace android {
 
@@ -124,6 +128,7 @@ status_t combineStatus(status_t a, status_t b) {
     }
 }
 
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
 std::string getVendorXmlPath(const std::string &path) {
     std::string vendorPath;
     std::string result = path;
@@ -140,11 +145,19 @@ std::string getVendorXmlPath(const std::string &path) {
         if (fileExists(vendorPath + std::string(".xml"))) {
             char version[PROP_VALUE_MAX] = {0};
             result = vendorPath + std::string(".xml");
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
+// QTI_BEGIN: 2019-08-27: Video: xmlparser: Read target version vendor property for vendor
 #ifdef __ANDROID_VNDK__
+// QTI_END: 2019-08-27: Video: xmlparser: Read target version vendor property for vendor
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
             property_get("vendor.media.target.version", version, "0");
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
+// QTI_BEGIN: 2019-08-27: Video: xmlparser: Read target version vendor property for vendor
 #else
             property_get("vendor.sys.media.target.version", version, "0");
 #endif
+// QTI_END: 2019-08-27: Video: xmlparser: Read target version vendor property for vendor
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
             if (atoi(version) > 0) {
                 std::string versionedXml = vendorPath + std::string("_v") +
                                  std::string(version) + std::string(".xml");
@@ -155,7 +168,9 @@ std::string getVendorXmlPath(const std::string &path) {
         }
         ALOGI("getVendorXmlPath (%s)", result.c_str());
     }
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
 
+// QTI_BEGIN: 2021-07-06: Video: Add provision to choose different media XMLs based on system image
     // Choose different xmls based on system (if needed)
     if (!android::base::GetProperty("ro.media.xml_variant.codecs", "").empty()){
         const std::vector<std::string> &xmlFiles = MediaCodecsXmlParser::getDefaultXmlNames();
@@ -169,12 +184,17 @@ std::string getVendorXmlPath(const std::string &path) {
                 ALOGI("getVendorXmlPath %s", result.c_str());
                 break;
             }
+// QTI_END: 2021-07-06: Video: Add provision to choose different media XMLs based on system image
+// QTI_BEGIN: 2021-01-06: Video: Stagefright: Update the logic to choose xml files
         }
     }
+// QTI_END: 2021-01-06: Video: Stagefright: Update the logic to choose xml files
 
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
     return result;
 }
 
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
 MediaCodecsXmlParser::StringSet parseCommaSeparatedStringSet(const char *s) {
     MediaCodecsXmlParser::StringSet result;
     for (const char *ptr = s ? : ""; *ptr; ) {
@@ -226,8 +246,10 @@ struct MediaCodecsXmlParser::Impl {
               mError(error) {
             if (error.empty() && s) {
                 mError = "Failed (" + std::string(asString(s)) + ")";
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
             }
         }
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
         operator status_t() const { return mStatus; }
         std::string error() const { return mError; }
     };
@@ -239,10 +261,12 @@ struct MediaCodecsXmlParser::Impl {
         AttributeMap mServiceAttributeMap;
         CodecMap mCodecMap;
         Result addGlobal(std::string key, std::string value, bool updating);
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
 
         //Override attributes
         std::vector<std::string> mDecoders_override;
         std::vector<std::string> mEncoders_override;
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
     };
 
     enum Section {
@@ -297,7 +321,9 @@ struct MediaCodecsXmlParser::Impl {
             return {
                 mIncludeStack.size(), mSectionStack.size(), mVariantsStack.size(), mCurrent.size()
             };
+// QTI_BEGIN: 2018-06-05: Video: media: Add changes to pick target specific media xml's
         }
+// QTI_END: 2018-06-05: Video: media: Add changes to pick target specific media xml's
 
         void restore(RestorePoint rp) {
             CHECK_GE(mIncludeStack.size(), rp.numIncludes);
@@ -396,8 +422,10 @@ struct MediaCodecsXmlParser::Impl {
         status_t mStatus;
 
         void parseXmlFile();
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
         void parseOverrideXmlFile();
         void parseXmlFile_override();
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
 
         // XML parser callbacks
         static void StartElementHandlerWrapper(void *me, const char *name, const char **attrs);
@@ -406,6 +434,7 @@ struct MediaCodecsXmlParser::Impl {
         void startElementHandler(const char *name, const char **attrs);
         void endElementHandler(const char *name);
 
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
         // Override XML parser callbacks
         static void StartOverrideElementHandlerWrapper(
                 void *me, const char *name, const char **attrs);
@@ -422,6 +451,7 @@ struct MediaCodecsXmlParser::Impl {
         void startElementHandler_override(const char *name, const char **attrs);
         void endElementHandler_override(const char *name);
 
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
         void updateStatus(status_t status);
         void logAnyErrors(const Result &status) const;
         status_t getStatus() const { return mStatus; }
@@ -522,14 +552,17 @@ status_t MediaCodecsXmlParser::Impl::parseXmlFilesInSearchDirs(
 
 status_t MediaCodecsXmlParser::Impl::parseXmlPath(const std::string &path) {
     std::lock_guard<std::mutex> guard(mLock);
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
     std::string vendorPath = getVendorXmlPath(path);
 
     if (!fileExists(vendorPath)) {
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
         ALOGV("Cannot find %s", vendorPath.c_str());
         mParsingStatus = combineStatus(mParsingStatus, NAME_NOT_FOUND);
         return NAME_NOT_FOUND;
     }
 
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
     std::string qspaEnabled = android::base::GetProperty("ro.boot.vendor.qspa", "");
     if (!strcmp(qspaEnabled.c_str(), "true")) {
         if (!android::base::GetProperty("ro.media.xml_variant.codecs", "").empty()) {
@@ -579,14 +612,19 @@ status_t MediaCodecsXmlParser::Impl::parseXmlPath(const std::string &path) {
             }
         }
     }
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
     // save state (even though we should always be at toplevel here)
     State::RestorePoint rp = mState.createRestorePoint();
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
     Parser parser(&mState, vendorPath);
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
     parser.parseXmlFile();
     mState.restore(rp);
 
     if (parser.getStatus() != OK) {
+// QTI_BEGIN: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
         ALOGD("parseXmlPath(%s) failed with %s", vendorPath.c_str(), asString(parser.getStatus()));
+// QTI_END: 2019-07-02: Video: xmlparser: Add support for parsing target specific xml
     }
     mParsingStatus = combineStatus(mParsingStatus, parser.getStatus());
     return parser.getStatus();
@@ -715,6 +753,7 @@ void MediaCodecsXmlParser::Impl::Parser::EndElementHandlerWrapper(void *me, cons
     static_cast<MediaCodecsXmlParser::Impl::Parser*>(me)->endElementHandler(name);
 }
 
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
 void MediaCodecsXmlParser::Impl::Parser::parseOverrideXmlFile() {
     const char *path = mPath.c_str();
     ALOGD("parsing %s...", path);
@@ -855,6 +894,7 @@ void MediaCodecsXmlParser::Impl::Parser::EndElementHandlerWrapper_override(
     static_cast<MediaCodecsXmlParser::Impl::Parser*>(me)->endElementHandler_override(name);
 }
 
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
 status_t MediaCodecsXmlParser::Impl::Parser::includeXmlFile(const char **attrs) {
     const char *href = nullptr;
     size_t i = 0;
@@ -1067,6 +1107,7 @@ void MediaCodecsXmlParser::Impl::Parser::startElementHandler(
 }
 
 void MediaCodecsXmlParser::Impl::Parser::endElementHandler(const char *name) {
+// QTI_BEGIN: 2023-12-04: Core: libstagefright: Add support for Media codecs override
     // XMLParser handles tag matching, so we really just need to handle the section state here
     Section section = mState->section();
     switch (section) {
@@ -1418,6 +1459,7 @@ void MediaCodecsXmlParser::Impl::Parser::startElementHandler_override(
 }
 
 void MediaCodecsXmlParser::Impl::Parser::endElementHandler_override(const char *name) {
+// QTI_END: 2023-12-04: Core: libstagefright: Add support for Media codecs override
     // XMLParser handles tag matching, so we really just need to handle the section state here
     Section section = mState->section();
     switch (section) {

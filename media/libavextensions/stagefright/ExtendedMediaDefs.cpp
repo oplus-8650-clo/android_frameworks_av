@@ -33,7 +33,9 @@
 namespace android {
 
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-05-08: Audio: av: Changes to support MPEGH
 const char *MEDIA_MIMETYPE_AUDIO_MHAS = "audio/mhas";
+// QTI_END: 2018-05-08: Audio: av: Changes to support MPEGH
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 const char *MEDIA_MIMETYPE_VIDEO_WMV = "video/x-ms-wmv";
 const char *MEDIA_MIMETYPE_VIDEO_WMV_VC1 = "video/wvc1";
@@ -48,8 +50,10 @@ const char *MEDIA_MIMETYPE_CONTAINER_MPEG2 = "video/mp2";
 const char *MEDIA_MIMETYPE_CONTAINER_3G2 = "video/3g2";
 const char *MEDIA_MIMETYPE_AUDIO_DTS_LBR = "audio/dts-lbr";
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2022-02-21: Audio: media: add support for "amr-wb+" mime
 const char *MEDIA_MIMETYPE_AUDIO_AMR_WB_PLUS = "audio/amr-wb+";
 const char *MEDIA_MIMETYPE_AUDIO_QC_AMR_WB_PLUS = "audio/amr-wb-plus";
+// QTI_END: 2022-02-21: Audio: media: add support for "amr-wb+" mime
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 const char *MEDIA_MIMETYPE_AUDIO_AIFF = "audio/x-aiff";
 const char *MEDIA_MIMETYPE_AUDIO_APE = "audio/x-ape";

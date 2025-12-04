@@ -431,9 +431,9 @@ inline static const char *asString_AV1Level(int32_t i, const char *def = "??") {
 inline constexpr int32_t HEVCProfileMain        = 0x01;
 inline constexpr int32_t HEVCProfileMain10      = 0x02;
 inline constexpr int32_t HEVCProfileMainStill   = 0x04;
-// QTI_BEGIN: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_BEGIN: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
 inline constexpr int32_t HEVCProfileMain10Still = 0x08;
-// QTI_END: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_END: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
 inline constexpr int32_t HEVCProfileMain10HDR10 = 0x1000;
 inline constexpr int32_t HEVCProfileMain10HDR10Plus = 0x2000;
 
@@ -442,9 +442,9 @@ inline static const char *asString_HEVCProfile(int32_t i, const char *def = "??"
         case HEVCProfileMain:               return "Main";
         case HEVCProfileMain10:             return "Main10";
         case HEVCProfileMainStill:          return "MainStill";
-// QTI_BEGIN: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_BEGIN: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
         case HEVCProfileMain10Still:        return "Main10Still";
-// QTI_END: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_END: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
         case HEVCProfileMain10HDR10:        return "Main10HDR10";
         case HEVCProfileMain10HDR10Plus:    return "Main10HDR10Plus";
         default:                            return def;
@@ -941,7 +941,9 @@ inline constexpr char MIMETYPE_VIDEO_MPEG2[] = "video/mpeg2";
 inline constexpr char MIMETYPE_VIDEO_RAW[] = "video/raw";
 inline constexpr char MIMETYPE_VIDEO_DOLBY_VISION[] = "video/dolby-vision";
 inline constexpr char MIMETYPE_VIDEO_SCRAMBLED[] = "video/scrambled";
+// QTI_BEGIN: 2024-09-12: Video: av: Map HEVC profiles for MVHEVC mimeType
 inline constexpr char MIMETYPE_VIDEO_MVHEVC[] = "video/x-mvhevc";
+// QTI_END: 2024-09-12: Video: av: Map HEVC profiles for MVHEVC mimeType
 
 inline constexpr char MIMETYPE_AUDIO_AMR_NB[] = "audio/3gpp";
 inline constexpr char MIMETYPE_AUDIO_AMR_WB[] = "audio/amr-wb";

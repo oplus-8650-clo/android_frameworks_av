@@ -70,7 +70,9 @@ struct NuPlayer::Renderer : public AHandler {
     void resume();
 
     void setVideoFrameRate(float fps);
+// QTI_BEGIN: 2022-03-26: Video: nuplayer: proper handling of audio start latency for A/V sync
     void setIsSeekonPause();
+// QTI_END: 2022-03-26: Video: nuplayer: proper handling of audio start latency for A/V sync
 
     status_t getCurrentPosition(int64_t *mediaUs);
     int64_t getVideoLateByUs();
@@ -105,7 +107,9 @@ struct NuPlayer::Renderer : public AHandler {
         kWhatMediaRenderingStart      = 'mdrd',
         kWhatAudioTearDown            = 'adTD',
         kWhatAudioOffloadPauseTimeout = 'aOPT',
+// QTI_BEGIN: 2019-07-01: Video: NuPlayer: Start renderer after video preroll is completed
         kWhatVideoPrerollComplete     = 'vdpC',
+// QTI_END: 2019-07-01: Video: NuPlayer: Start renderer after video preroll is completed
         kWhatReleaseWakeLock          = 'adRL',
     };
 
@@ -181,7 +185,9 @@ protected:
     AVSyncSettings mSyncSettings;
     float mVideoFpsHint;
 
+// QTI_BEGIN: 2024-11-28: Audio: libmediaplayerservice: NuPlayer: playback: fix anchor time
     int64_t mLastAudioAnchorNowUs;
+// QTI_END: 2024-11-28: Audio: libmediaplayerservice: NuPlayer: playback: fix anchor time
     int64_t mAudioFirstAnchorTimeMediaUs;
     // previous audio anchor timestamp, in media time base.
     int64_t mAudioAnchorTimeMediaUs;
@@ -290,8 +296,10 @@ protected:
     void onDrainVideoQueue();
     void postDrainVideoQueue();
 
+// QTI_BEGIN: 2024-11-28: Audio: libmediaplayerservice: NuPlayer: playback: fix anchor time
     void forceAudioUpdateAnchorTime();
 
+// QTI_END: 2024-11-28: Audio: libmediaplayerservice: NuPlayer: playback: fix anchor time
     void prepareForMediaRenderingStart_l();
     void notifyIfMediaRenderingStarted_l();
 
@@ -344,11 +352,17 @@ protected:
     int64_t getDurationUsIfPlayedAtSampleRate(uint32_t numFrames);
 
     DISALLOW_EVIL_CONSTRUCTORS(Renderer);
+// QTI_BEGIN: 2018-09-18: Video: NuPlayerRenderer: video should clear and update anchor at the same time
 
 private:
     bool mNeedVideoClearAnchor;
+// QTI_END: 2018-09-18: Video: NuPlayerRenderer: video should clear and update anchor at the same time
+// QTI_BEGIN: 2022-03-26: Video: nuplayer: proper handling of audio start latency for A/V sync
     bool mIsSeekonPause;
+// QTI_END: 2022-03-26: Video: nuplayer: proper handling of audio start latency for A/V sync
+// QTI_BEGIN: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
     float mVideoRenderFps;
+// QTI_END: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
 };
 
 } // namespace android

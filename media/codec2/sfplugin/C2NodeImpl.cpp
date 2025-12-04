@@ -223,13 +223,18 @@ void C2NodeImpl::getConsumerUsageBits(uint64_t *usage) {
 
 void C2NodeImpl::getInputBufferParams(IAidlNode::InputBufferParams *params) {
     params->bufferCountActual = 16;
+// QTI_BEGIN: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
     uint32_t compBufferCountActual = 0;
+// QTI_END: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
 
     // WORKAROUND: having more slots improve performance while consuming
     // more memory. This is a temporary workaround to reduce memory for
     // larger-than-4K scenario.
+// QTI_BEGIN: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
     {
+// QTI_END: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
         std::shared_ptr<Codec2Client::Component> comp = mComp.lock();
+// QTI_BEGIN: 2025-07-21: Video: Codec2: Update buffer count only for lookahead session
 
         auto isLookaheadEncode = [comp] () {
             std::vector<std::shared_ptr<C2ParamDescriptor>> paramDescriptors;
@@ -268,6 +273,7 @@ void C2NodeImpl::getInputBufferParams(IAidlNode::InputBufferParams *params) {
             return false;
         };
 
+// QTI_END: 2025-07-21: Video: Codec2: Update buffer count only for lookahead session
         C2PortActualDelayTuning::input inputDelay(0);
         C2ActualPipelineDelayTuning pipelineDelay(0);
         c2_status_t c2err = C2_NOT_FOUND;
@@ -276,6 +282,7 @@ void C2NodeImpl::getInputBufferParams(IAidlNode::InputBufferParams *params) {
                     {&inputDelay, &pipelineDelay}, {}, C2_DONT_BLOCK, nullptr);
         }
         if (c2err == C2_OK || c2err == C2_BAD_INDEX) {
+// QTI_BEGIN: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
             compBufferCountActual = 4;
             compBufferCountActual += (inputDelay ? inputDelay.value : 0u);
             compBufferCountActual += (pipelineDelay ? pipelineDelay.value : 0u);
@@ -290,16 +297,23 @@ void C2NodeImpl::getInputBufferParams(IAidlNode::InputBufferParams *params) {
         } else {
             // overwrite component buffer count if it is more than
             // params->bufferCountActual (16) for 4k or lower resolutions
+// QTI_END: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
+// QTI_BEGIN: 2025-07-21: Video: Codec2: Update buffer count only for lookahead session
             if (isLookaheadEncode() && compBufferCountActual > params->bufferCountActual) {
+// QTI_END: 2025-07-21: Video: Codec2: Update buffer count only for lookahead session
+// QTI_BEGIN: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
                 params->bufferCountActual = compBufferCountActual;
             }
+// QTI_END: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
         }
     }
 
     params->frameWidth = mWidth;
     params->frameHeight = mHeight;
+// QTI_BEGIN: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
     ALOGD("getInputBufferParams: wxh %dx%d, delay %d",
         params->frameWidth, params->frameHeight, params->bufferCountActual);
+// QTI_END: 2025-04-24: Video: Codec2: Query buffer count from HAL for low resolutions
 }
 
 void C2NodeImpl::setConsumerUsageBits(uint64_t usage) {

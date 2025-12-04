@@ -67,10 +67,12 @@ struct _C2FenceFactory {
      * \param validate          If true, the fence fd will be validated to ensure
      *                          it is a valid pending sync fence fd.
      */
+// QTI_BEGIN: 2024-09-19: Video: Codec2: Fence cleanup change
     static C2Fence CreateSyncFence(int fenceFd, bool validate /*= true*/);
 
     //Overloading CreateSyncFence for backward compatibility
 
+// QTI_END: 2024-09-19: Video: Codec2: Fence cleanup change
     static C2Fence CreateSyncFence(int fenceFd);
 
     /*

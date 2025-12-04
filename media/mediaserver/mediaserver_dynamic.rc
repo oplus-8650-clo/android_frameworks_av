@@ -1,4 +1,6 @@
 on property:init.svc.media=*
     setprop init.svc.mediadrm ${init.svc.media}
 
+#  QTI_BEGIN: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.
 import /system/etc/init/hw/mediaserver.64bit_${ro.mediaserver.64b.enable:-false}.rc
+#  QTI_END: 2024-08-01: Core: Add configurability to mediaserver to be 64bit even on 32+64.

@@ -119,7 +119,9 @@ cc_library_static {
         "-Werror",
         "-Wno-error=deprecated-declarations",
         "-Wno-multichar",
+// QTI_BEGIN: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
         "-D__NO_AVEXTENSIONS__",
+// QTI_END: 2019-05-06: Video: av: Strip avextension modifications for libmedia2_jni
     ],
 
     sanitize: {
@@ -319,7 +321,9 @@ cc_library {
         "libstagefright_foundation",
         "libstagefright_framecapture_utils",
         "libstagefright_omx_utils",
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
         "android.hidl.memory@1.0",
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
         "libui",
         "libutils",
         "packagemanager_aidl-cpp",

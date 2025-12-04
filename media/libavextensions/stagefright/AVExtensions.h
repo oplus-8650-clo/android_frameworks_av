@@ -54,7 +54,9 @@ namespace android {
 
 struct ACodec;
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-05-13: Video: stagefright: add factory method to create MediaFilters
 struct CodecBase;
+// QTI_END: 2018-05-13: Video: stagefright: add factory method to create MediaFilters
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 struct MediaCodec;
 struct ALooper;
@@ -155,7 +157,9 @@ struct AVUtils {
     virtual audio_format_t updateAudioFormat(audio_format_t audioFormat,
             const sp<AMessage> &);
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-02-13: Audio: av: update canOffloadAPE to canOffloadSteam
     virtual bool canOffloadStream(const sp<MetaData> &meta);
+// QTI_END: 2019-02-13: Audio: av: update canOffloadAPE to canOffloadSteam
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     virtual bool useQCHWEncoder(const sp<AMessage> &,Vector<AString> *) { return false; }
 
@@ -175,7 +179,9 @@ struct AVUtils {
     virtual void printFileName(int /*fd*/) {}
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 
+// QTI_BEGIN: 2019-03-19: Video: stagefright: pass time offset to avenhancement
     // deprecate these two use one with 3 arguments
+// QTI_END: 2019-03-19: Video: stagefright: pass time offset to avenhancement
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     virtual void addDecodingTimesFromBatch(MediaBuffer * /*buf*/,
             List<int64_t> &/*decodeTimeQueue*/) {}
@@ -185,9 +191,11 @@ struct AVUtils {
             List<int64_t> &/*decodeTimeQueue*/) {}
 // QTI_END: 2018-02-27: Video: Compilation fix for PPR1.180219.001 and fix for mIoHandle
 
+// QTI_BEGIN: 2019-03-19: Video: stagefright: pass time offset to avenhancement
     virtual void addDecodingTimesFromBatch(MediaBufferBase * /*buf*/,
             List<int64_t> &/*decodeTimeQueue*/, int64_t /*time-offset-us*/) {}
 
+// QTI_END: 2019-03-19: Video: stagefright: pass time offset to avenhancement
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     virtual bool canDeferRelease(const sp<MetaData> &/*meta*/) { return false; }
     virtual void setDeferRelease(sp<MetaData> &/*meta*/) {}

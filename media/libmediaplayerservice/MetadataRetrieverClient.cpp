@@ -13,13 +13,13 @@
 ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
-// QTI_BEGIN: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_BEGIN: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
 **
 ** Changes from Qualcomm Innovation Center are provided under the following license:
 ** Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 ** SPDX-License-Identifier: BSD-3-Clause-Clear
 **
-// QTI_END: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_END: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
 */
 
 //#define LOG_NDEBUG 0
@@ -59,12 +59,12 @@ MetadataRetrieverClient::MetadataRetrieverClient(pid_t pid)
 {
     ALOGV("MetadataRetrieverClient constructor pid(%d)", pid);
     mPid = pid;
-// QTI_BEGIN: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_BEGIN: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
     // Trigger Perf boost to support faster HEIF decoding. Set the duration
     // to indefinite. This perflock will be released when MetadataRetrieverClient
     // is released.
     mPerfBoost = std::make_unique<HeifPerfBoost>(true, 0);
-// QTI_END: 2023-06-21: Data: libmediaplayerservice: Enable perfboost during heif decode
+// QTI_END: 2023-06-21: Video: libmediaplayerservice: Enable perfboost during heif decode
     mAlbumArt = NULL;
     mRetriever = NULL;
 }

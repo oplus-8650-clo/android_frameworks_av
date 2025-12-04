@@ -12,14 +12,18 @@ cc_library_static {
         "libutils",
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     header_libs:[
         "media_plugin_headers",
         "libbase_headers",
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
         "libaudioclient_headers",
         "libmedia_headers",
         "libmediametrics_headers",
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     ],
 
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     include_dirs: [
         "frameworks/av/media/libavextensions",
@@ -30,9 +34,11 @@ cc_library_static {
         "-Werror",
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-02-19: Video: media: Enable CFI in libavextensions
     sanitize: {
         cfi: true,
     },
+// QTI_END: 2019-02-19: Video: media: Enable CFI in libavextensions
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 }
 
@@ -64,14 +70,20 @@ cc_library_static {
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     header_libs:[
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
         "media_ndk_headers",
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
         "media_plugin_headers",
         "libbase_headers",
         "libstagefright_headers",
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
         "libmedia_headers",
         "libmediametrics_headers",
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     ],
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     include_dirs: [
         "frameworks/av/media/libmediaextractor",
@@ -92,9 +104,11 @@ cc_library_static {
         "-Werror",
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-02-19: Video: media: Enable CFI in libavextensions
     sanitize: {
         cfi: true,
     },
+// QTI_END: 2019-02-19: Video: media: Enable CFI in libavextensions
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 }
 
@@ -123,15 +137,19 @@ cc_library_static {
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     header_libs:[
         "media_plugin_headers",
         "libbase_headers",
         "libstagefright_headers",
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
         "libmediadrm_headers",
         "libmediametrics_headers",
         "libmediautils_headers",
         "libstagefright_rtsp_headers",
+// QTI_BEGIN: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
     ],
+// QTI_END: 2018-05-04: Video: libstagefirght:change way of accessing aosp project headers
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
     include_dirs: [
         "frameworks/av/media/libmediaplayerservice",
@@ -149,9 +167,11 @@ cc_library_static {
         "-Werror",
     ],
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2019-02-19: Video: media: Enable CFI in libavextensions
     sanitize: {
         cfi: true,
     },
+// QTI_END: 2019-02-19: Video: media: Enable CFI in libavextensions
 // QTI_BEGIN: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
 }
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions

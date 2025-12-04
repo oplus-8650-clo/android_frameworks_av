@@ -127,7 +127,9 @@ protected:
     audio_encoder mAudioEncoder;
     video_encoder mVideoEncoder;
     bool mUse64BitFileOffset;
+// QTI_BEGIN: 2022-10-19: Audio: media: refactor compress audio recording.
     bool mEnabledCompressAudioRecording;
+// QTI_END: 2022-10-19: Audio: media: refactor compress audio recording.
     int32_t mVideoWidth, mVideoHeight;
     int32_t mFrameRate;
     int32_t mVideoBitRate;
@@ -174,9 +176,9 @@ protected:
     double mCaptureFps;
     int64_t mTimeBetweenCaptureUs;
     sp<CameraSourceTimeLapse> mCameraSourceTimeLapse;
-// QTI_BEGIN: 2018-05-17: Camera: stagefright: Fix recording issues when EIS enabled
+// QTI_BEGIN: 2018-05-17: Video: stagefright: Fix recording issues when EIS enabled
     sp<CameraSource> mCameraSource;
-// QTI_END: 2018-05-17: Camera: stagefright: Fix recording issues when EIS enabled
+// QTI_END: 2018-05-17: Video: stagefright: Fix recording issues when EIS enabled
     String8 mParams;
 
     MetadataBufferType mMetaDataStoredInVideoBuffers;
@@ -237,7 +239,9 @@ protected:
 
     // Encoding parameter handling utilities
     status_t setParameter(const String8 &key, const String8 &value);
+// QTI_BEGIN: 2023-02-25: Audio: libmediaplayerservice: add support for dynamic audio bitrate
     virtual status_t setParamAudioEncodingBitRate(int32_t bitRate);
+// QTI_END: 2023-02-25: Audio: libmediaplayerservice: add support for dynamic audio bitrate
     status_t setParamAudioNumberOfChannels(int32_t channles);
     status_t setParamAudioSamplingRate(int32_t sampleRate);
     status_t setParamAudioTimeScale(int32_t timeScale);
@@ -288,8 +292,10 @@ protected:
     virtual status_t handleCustomAudioEncoder() {return UNKNOWN_ERROR;}
     virtual sp<MediaSource> setPCMRecording() {return NULL;}
 // QTI_END: 2018-02-19: Audio: frameworks/av: enable audio extended features
+// QTI_BEGIN: 2022-10-19: Audio: media: refactor compress audio recording.
     virtual bool isCompressAudioRecordingSupported() { return false; }
     virtual sp<AudioSource> setCompressAudioRecording() { return nullptr; }
+// QTI_END: 2022-10-19: Audio: media: refactor compress audio recording.
 
     StagefrightRecorder(const StagefrightRecorder &);
     StagefrightRecorder &operator=(const StagefrightRecorder &);

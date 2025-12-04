@@ -262,9 +262,9 @@ ALookup<C2Config::profile_t, int32_t> sHevcProfiles = {
     { C2Config::PROFILE_HEVC_MAIN, HEVCProfileMain },
     { C2Config::PROFILE_HEVC_MAIN_10, HEVCProfileMain10 },
     { C2Config::PROFILE_HEVC_MAIN_STILL, HEVCProfileMainStill },
-// QTI_BEGIN: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_BEGIN: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
     { C2Config::PROFILE_HEVC_MAIN_10_STILL, HEVCProfileMain10Still},
-// QTI_END: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_END: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
     { C2Config::PROFILE_HEVC_MAIN_INTRA, HEVCProfileMain },
     { C2Config::PROFILE_HEVC_MAIN_10_INTRA, HEVCProfileMain10 },
     { C2Config::PROFILE_HEVC_MAIN_10, HEVCProfileMain10HDR10 },
@@ -887,10 +887,10 @@ C2Mapper::GetProfileLevelMapper(std::string mediaType) {
     } else if (mediaType == MIMETYPE_VIDEO_H263) {
         return std::make_shared<H263ProfileLevelMapper>();
     } else if (mediaType == MIMETYPE_VIDEO_HEVC
-// QTI_BEGIN: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_BEGIN: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
                 || mediaType == MIMETYPE_VIDEO_MVHEVC
                 || mediaType == MIMETYPE_IMAGE_ANDROID_HEIC ) {
-// QTI_END: 2025-03-13: Core: frameworks/av: introduce HEVCMain10Still profile
+// QTI_END: 2025-03-13: Video: frameworks/av: introduce HEVCMain10Still profile
         return std::make_shared<HevcProfileLevelMapper>();
     } else if (mediaType == MIMETYPE_VIDEO_MPEG2) {
         return std::make_shared<Mpeg2ProfileLevelMapper>();

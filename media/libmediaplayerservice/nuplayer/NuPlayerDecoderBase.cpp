@@ -38,7 +38,9 @@ namespace android {
 NuPlayer::DecoderBase::DecoderBase(const sp<AMessage> &notify)
     :  mNotify(notify),
        mBufferGeneration(0),
+// QTI_BEGIN: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
        mRequestInputBufferDelay(10 * 1000LL),
+// QTI_END: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
        mPaused(false),
        mStats(new AMessage),
        mRequestInputBuffersPending(false) {
@@ -127,10 +129,13 @@ void NuPlayer::DecoderBase::onRequestInputBuffers() {
         mRequestInputBuffersPending = true;
 
         sp<AMessage> msg = new AMessage(kWhatRequestInputBuffers, this);
+// QTI_BEGIN: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
         msg->post(mRequestInputBufferDelay);
+// QTI_END: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
     }
 }
 
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 void NuPlayer::DecoderBase::logLatencyBegin(std::string strId) {
     mLatencyStartTime[strId] = std::chrono::system_clock::now();
 }
@@ -141,6 +146,7 @@ void NuPlayer::DecoderBase::logLatencyEnd(std::string strId) {
     ALOGI("%s latency : %.2f ms", strId.c_str(), (duration.count() * 1000));
 }
 
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 void NuPlayer::DecoderBase::onMessageReceived(const sp<AMessage> &msg) {
 
     switch (msg->what()) {

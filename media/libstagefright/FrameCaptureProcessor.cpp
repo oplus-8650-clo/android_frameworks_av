@@ -157,12 +157,14 @@ status_t FrameCaptureProcessor::onCapture(const sp<Layer> &layer,
     base::unique_fd bufferFence;
     base::unique_fd drawFence;
     mRE->useProtectedContext(false);
+// QTI_BEGIN: 2020-08-26: Video: libstagefright: clear imagecache stored by RenderEngine drawlayers
 
     for (auto layer : clientCompositionLayers) {
         sp<GraphicBuffer> gBuf = layer->source.buffer.buffer;
         mRE->cacheExternalTextureBuffer(gBuf);
     }
 
+// QTI_END: 2020-08-26: Video: libstagefright: clear imagecache stored by RenderEngine drawlayers
     status_t err = mRE->drawLayers(clientCompositionDisplay, clientCompositionLayers, buffer.get(),
             /*useFramebufferCache=*/false, std::move(bufferFence), &drawFence);
 

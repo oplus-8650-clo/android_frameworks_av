@@ -181,8 +181,10 @@ void MtpServer::run() {
         int ret = mRequest.read(mHandle);
         if (ret < 0) {
             ALOGE("request read returned %d, errno: %d", ret, errno);
+// QTI_BEGIN: 2022-12-05: Core: MTP: Do not exit MtpServer on receiving EPIPE
             //Some UDCs return EPIPE on clear feature(ENDPOINT_HALT)
             if (errno == ECANCELED || errno == EPIPE) {
+// QTI_END: 2022-12-05: Core: MTP: Do not exit MtpServer on receiving EPIPE
                 // return to top of loop and wait for next command
                 continue;
             }

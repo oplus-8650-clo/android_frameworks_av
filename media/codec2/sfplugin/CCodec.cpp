@@ -2520,7 +2520,19 @@ void CCodec::flush() {
     c2_status_t err = comp->flush(C2Component::FLUSH_COMPONENT, &flushedWork);
     {
         Mutexed<std::list<std::unique_ptr<C2Work>>>::Locked queue(mWorkDoneQueue);
-        flushedWork.splice(flushedWork.end(), *queue);
+        for (auto it = queue->begin(); it != queue->end(); ) {
+            const auto &worklets = (*it)->worklets;
+            bool isConfigUpdateOnly = !worklets.empty() &&
+                                    worklets.front() != nullptr &&
+                                    worklets.front()->output.buffers.empty() &&
+                                    !worklets.front()->output.configUpdate.empty();
+            if (isConfigUpdateOnly) {
+                ALOGV("Specific work for configUpdate should not be flushed");
+                ++it;
+            } else {
+                flushedWork.splice(flushedWork.end(), *queue, it++);
+            }
+        }
     }
     if (err != C2_OK) {
         // TODO: convert err into status_t
@@ -2570,8 +2582,10 @@ void CCodec::signalResume() {
             // and the buffers are send to the client as soon as the codec
             // releases them
             ALOGI("Resuming with all input buffers still with codec");
+// QTI_BEGIN: 2023-06-23: Video: sfplugin: do not fail resume call if inputs slots are active
         } else if (err == WOULD_BLOCK) {
              ALOGI("Resuming with input buffers not a fatal error");
+// QTI_END: 2023-06-23: Video: sfplugin: do not fail resume call if inputs slots are active
         } else {
             ALOGE("Resume request for Input Buffers failed");
             mCallback->onError(err, ACTION_CODE_FATAL);
@@ -2598,9 +2612,11 @@ void CCodec::signalResume() {
         state->set(RUNNING);
     }
 
+// QTI_BEGIN: 2023-06-23: Video: sfplugin: do not fail resume call if inputs slots are active
      if (err != WOULD_BLOCK) {
         mChannel->requestInitialInputBuffers(std::move(clientInputBuffers));
      }
+// QTI_END: 2023-06-23: Video: sfplugin: do not fail resume call if inputs slots are active
 }
 
 void CCodec::signalSetParameters(const sp<AMessage> &msg) {

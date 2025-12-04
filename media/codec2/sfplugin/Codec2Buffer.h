@@ -84,6 +84,7 @@ public:
     bool copy(const std::shared_ptr<C2Buffer> &buffer) override;
 };
 
+// QTI_BEGIN: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
 /**
  * MediaCodecBuffer implementation that wraps a raw handle (native-handle). This cannot
  * cross process boundary so asC2Buffer() returns only nullptr.
@@ -101,6 +102,7 @@ private:
     std::shared_ptr<C2Buffer> mBufferRef;
 };
 
+// QTI_END: 2021-06-01: Video: EXPERIMENTAL: CCodec: Add metadata buffer support for linear output buffers
 /**
  * MediaCodecBuffer implementation to be used only as a dummy wrapper around a
  * C2Buffer object.

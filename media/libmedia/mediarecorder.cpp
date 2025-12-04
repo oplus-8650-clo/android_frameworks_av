@@ -489,6 +489,7 @@ status_t MediaRecorder::setParameters(const String8& params) {
             mOutputFormat == OUTPUT_FORMAT_RTP_AVP)
             isInvalidState = false;
     }
+// QTI_BEGIN: 2023-02-25: Audio: libmedia: allow dynamic audio bitrate for mediarecorder
 
     // allow the "audio-param-encoding-bitrate" in all states except in error
     if (isInvalidState && params.contains("audio-param-encoding-bitrate") &&
@@ -496,6 +497,7 @@ status_t MediaRecorder::setParameters(const String8& params) {
         isInvalidState = false;
     }
 
+// QTI_END: 2023-02-25: Audio: libmedia: allow dynamic audio bitrate for mediarecorder
     if (isInvalidState) {
         ALOGE("setParameters is called in an invalid state: %d", mCurrentState);
         return INVALID_OPERATION;

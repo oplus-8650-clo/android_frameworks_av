@@ -153,7 +153,9 @@ private:
 
     bool mLegacyAdaptiveExperiment;
     IOMX::PortMode mPortMode[2];
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     // metadata and secure buffer type tracking
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
     MetadataBufferType mMetadataType[2];
     enum SecureBufferType {
         kSecureBufferTypeUnknown,

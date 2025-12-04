@@ -143,11 +143,11 @@ enum {
     // The language code for this media
     kKeyMediaLanguage     = 'lang',  // cstring
 
-// QTI_BEGIN: 2018-04-18: Data: libmediaextractor: add manufacure key in Metadata
+// QTI_BEGIN: 2018-04-18: Video: libmediaextractor: add manufacure key in Metadata
     // The manufacture code for this media
     kKeyMediaManufacture  = 'manu',  // cstring
 
-// QTI_END: 2018-04-18: Data: libmediaextractor: add manufacure key in Metadata
+// QTI_END: 2018-04-18: Video: libmediaextractor: add manufacure key in Metadata
     // To store the timed text format data
     kKeyTextFormatData    = 'text',  // raw data
 
@@ -232,15 +232,15 @@ enum {
     // Key for ALAC Magic Cookie
     kKeyAlacMagicCookie  = 'almc', // raw data
 
-// QTI_BEGIN: 2018-05-31: Data: libstagefirght: Add changes to handle multiple slices in writer
+// QTI_BEGIN: 2018-05-31: Video: libstagefirght: Add changes to handle multiple slices in writer
     kKeyFeatureNalLengthBitstream = 'nlbs', // int32_t key to check nal length bistream
-// QTI_END: 2018-05-31: Data: libstagefirght: Add changes to handle multiple slices in writer
+// QTI_END: 2018-05-31: Video: libstagefirght: Add changes to handle multiple slices in writer
     // AC-4 AudioPresentationInfo
     kKeyAudioPresentationInfo = 'audP',  // raw data
-// QTI_BEGIN: 2021-03-19: Data: libstagefright: Add changes to handle multiple slices in writer
+// QTI_BEGIN: 2021-03-19: Video: libstagefright: Add changes to handle multiple slices in writer
 
     kKeyVendorFeatureNalLength = 'vfnl',
-// QTI_END: 2021-03-19: Data: libstagefright: Add changes to handle multiple slices in writer
+// QTI_END: 2021-03-19: Video: libstagefright: Add changes to handle multiple slices in writer
 };
 
 enum {

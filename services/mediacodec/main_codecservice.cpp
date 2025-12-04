@@ -27,8 +27,10 @@
 #include <media/stagefright/omx/1.0/OmxStore.h>
 
 #include <dlfcn.h>
+// QTI_BEGIN: 2018-08-06: Video: Tuning of Binder buffer for various HALs
 #include <hwbinder/ProcessState.h>
 #include <cutils/properties.h>
+// QTI_END: 2018-08-06: Video: Tuning of Binder buffer for various HALs
 
 using namespace android;
 
@@ -38,6 +40,7 @@ static const char kSystemSeccompPolicyPath[] =
 static const char kVendorSeccompPolicyPath[] =
         "/vendor/etc/seccomp_policy/mediacodec.policy";
 
+// QTI_BEGIN: 2018-08-06: Video: Tuning of Binder buffer for various HALs
 #if ENABLE_BINDER_BUFFER_TUNING_FOR_32_BIT
 size_t getHWBinderMmapSize(){
 
@@ -58,11 +61,14 @@ size_t getHWBinderMmapSize(){
 }
 #endif
 
+// QTI_END: 2018-08-06: Video: Tuning of Binder buffer for various HALs
 int main(int argc __unused, char** argv)
 {
+// QTI_BEGIN: 2018-08-06: Video: Tuning of Binder buffer for various HALs
 #if ENABLE_BINDER_BUFFER_TUNING_FOR_32_BIT
     android::hardware::ProcessState::initWithMmapSize(getHWBinderMmapSize());
 #endif
+// QTI_END: 2018-08-06: Video: Tuning of Binder buffer for various HALs
     strcpy(argv[0], "media.codec");
     LOG(INFO) << "mediacodecservice starting";
     signal(SIGPIPE, SIG_IGN);

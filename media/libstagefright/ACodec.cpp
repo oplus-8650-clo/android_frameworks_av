@@ -71,7 +71,9 @@
 #include <stagefright/AVExtensions.h>
 
 // QTI_END: 2018-01-23: Audio: stagefright: Make classes customizable and add AV extensions
+// QTI_BEGIN: 2018-04-17: Audio: audio:QTI Flac decoder changes.
 #define QTI_FLAC_DECODER
+// QTI_END: 2018-04-17: Audio: audio:QTI Flac decoder changes.
 #include <server_configurable_flags/get_flags.h>
 
 namespace android {
@@ -899,11 +901,13 @@ status_t ACodec::setPortMode(int32_t portIndex, IOMX::PortMode mode) {
 }
 
 status_t ACodec::allocateBuffersOnPort(OMX_U32 portIndex) {
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     if (portIndex == kPortIndexInputExtradata ||
             portIndex == kPortIndexOutputExtradata) {
         return OK;
     }
 
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
     CHECK(portIndex == kPortIndexInput || portIndex == kPortIndexOutput);
 
     CHECK(mAllocator[portIndex] == NULL);
@@ -1670,11 +1674,13 @@ void ACodec::pollForRenderedFrames() {
 }
 
 status_t ACodec::freeBuffersOnPort(OMX_U32 portIndex) {
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     if (portIndex == kPortIndexInputExtradata ||
             portIndex == kPortIndexOutputExtradata) {
         return OK;
     }
 
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
     if (portIndex == kPortIndexInput) {
         mBufferChannel->setInputBufferArray({});
     } else {
@@ -2357,8 +2363,10 @@ status_t ACodec::configureCodec(
 // QTI_BEGIN: 2018-02-19: Audio: frameworks/av: enable audio extended features
 #ifdef QTI_FLAC_DECODER
 // QTI_END: 2018-02-19: Audio: frameworks/av: enable audio extended features
+// QTI_BEGIN: 2019-07-18: Audio: stagefright: create decoder as per the incoming component name.
 //setup qti component From setupCustomCodec only when it starts with OMX.qti. otherwise create incoming component.
     } else if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_FLAC) && !mComponentName.startsWith("OMX.qti.")) {
+// QTI_END: 2019-07-18: Audio: stagefright: create decoder as per the incoming component name.
 // QTI_BEGIN: 2018-02-19: Audio: frameworks/av: enable audio extended features
 #else
 // QTI_END: 2018-02-19: Audio: frameworks/av: enable audio extended features
@@ -2654,11 +2662,13 @@ status_t ACodec::setOperatingRate(float rateFloat, bool isVideo) {
     }
     OMX_U32 rate;
     if (isVideo) {
+// QTI_BEGIN: 2020-01-08: Video: ACodec: refine video operating rate handling
         rateFloat = rateFloat * 65536.0f + 0.5f;
         if (rateFloat >= (float)INT_MAX) {
             rate = INT_MAX;
         } else {
             rate = (OMX_U32)rateFloat;
+// QTI_END: 2020-01-08: Video: ACodec: refine video operating rate handling
         }
     } else {
         if (rateFloat > (float)UINT_MAX) {
@@ -3399,10 +3409,12 @@ status_t ACodec::setupRawAudioFormat(
             pcmParams.nBitPerSample = 24;
             break;
 // QTI_END: 2018-02-19: Audio: frameworks/av: enable audio extended features
+// QTI_BEGIN: 2018-05-31: Audio: libstagefright: Add support for 32bit PCM
         case kAudioEncodingPcm32bit:
             pcmParams.eNumData = OMX_NumericalDataSigned;
             pcmParams.nBitPerSample = 32;
             break;
+// QTI_END: 2018-05-31: Audio: libstagefright: Add support for 32bit PCM
         default:
             return BAD_VALUE;
     }
@@ -4733,7 +4745,9 @@ status_t ACodec::setupAVCEncoderParameters(const sp<AMessage> &msg) {
     ALOGI("setupAVCEncoderParameters with [profile: %s] [level: %s]",
             asString(h264type.eProfile), asString(h264type.eLevel));
 
+// QTI_BEGIN: 2018-10-01: Video: libstagefright: Adding intra period support for constrained profiles
     if (h264type.eProfile == OMX_VIDEO_AVCProfileBaseline ||
+// QTI_END: 2018-10-01: Video: libstagefright: Adding intra period support for constrained profiles
         h264type.eProfile == static_cast<OMX_VIDEO_AVCPROFILETYPE>(
             OMX_VIDEO_AVCProfileConstrainedBaseline)) {
         h264type.nSliceHeaderSpacing = 0;
@@ -4753,7 +4767,9 @@ status_t ACodec::setupAVCEncoderParameters(const sp<AMessage> &msg) {
         h264type.bDirectSpatialTemporal = OMX_FALSE;
         h264type.nCabacInitIdc = 0;
     } else if (h264type.eProfile == OMX_VIDEO_AVCProfileMain ||
+// QTI_BEGIN: 2018-10-01: Video: libstagefright: Adding intra period support for constrained profiles
             h264type.eProfile == OMX_VIDEO_AVCProfileHigh ||
+// QTI_END: 2018-10-01: Video: libstagefright: Adding intra period support for constrained profiles
             h264type.eProfile == static_cast<OMX_VIDEO_AVCPROFILETYPE>(
                 OMX_VIDEO_AVCProfileConstrainedHigh)) {
         h264type.nSliceHeaderSpacing = 0;
@@ -5528,9 +5544,11 @@ status_t ACodec::getPortFormat(OMX_U32 portIndex, sp<AMessage> &notify) {
                             && params.nBitPerSample == 24u) {
                         encoding = kAudioEncodingPcm24bitPacked;
 // QTI_END: 2018-02-19: Audio: frameworks/av: enable audio extended features
+// QTI_BEGIN: 2018-05-31: Audio: libstagefright: Add support for 32bit PCM
                     } else if (params.eNumData == OMX_NumericalDataSigned
                             && params.nBitPerSample == 32u) {
                         encoding = kAudioEncodingPcm32bit;
+// QTI_END: 2018-05-31: Audio: libstagefright: Add support for 32bit PCM
                     } else if (params.nBitPerSample != 16u
                             || params.eNumData != OMX_NumericalDataSigned) {
                         ALOGE("unsupported PCM port: %s(%d), %s(%d) mode ",
@@ -6744,7 +6762,9 @@ bool ACodec::BaseState::onOMXFillBufferDone(
 
         case RESUBMIT_BUFFERS:
         {
+// QTI_BEGIN: 2019-11-13: Video: libstagefright: do not send FTB after EOS
             if (rangeLength == 0 && !((flags & OMX_BUFFERFLAG_EOS)
+// QTI_END: 2019-11-13: Video: libstagefright: do not send FTB after EOS
                     || mCodec->mPortEOS[kPortIndexOutput])) {
                 ALOGV("[%s] calling fillBuffer %u",
                      mCodec->mComponentName.c_str(), info->mBufferID);
@@ -6766,14 +6786,18 @@ bool ACodec::BaseState::onOMXFillBufferDone(
                 }
                 mCodec->sendFormatChange();
             }
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
 
             sp<AMessage> updatedFormat = mCodec->mOutputFormat;
             if (mCodec->mIsVideo && (flags & OMX_BUFFERFLAG_EXTRADATA)) {
                 updatedFormat = AVUtils::get()->fillExtradata(
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
                         mCodec->mBuffers[kPortIndexOutputExtradata][index].mCodecData,
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
                         mCodec->mOutputFormat);
             }
             buffer->setFormat(updatedFormat);
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
 
             if (mCodec->usingSecureBufferOnEncoderOutput()) {
                 native_handle_t *handle = NULL;
@@ -6896,14 +6920,18 @@ void ACodec::BaseState::onOutputBufferDrained(const sp<AMessage> &msg) {
         mCodec->signalError(OMX_ErrorUndefined, FAILED_TRANSACTION);
         return;
     }
+// QTI_BEGIN: 2018-04-02: Video: Stagefright: Addition of DS capability
 
     int64_t timeUs = -1;
     buffer->meta()->findInt64("timeUs", &timeUs);
     bool skip = mCodec->getDSModeHint(msg, timeUs);
 
+// QTI_END: 2018-04-02: Video: Stagefright: Addition of DS capability
     info->mData = buffer;
     int32_t render;
+// QTI_BEGIN: 2018-04-02: Video: Stagefright: Addition of DS capability
     if (!skip && mCodec->mNativeWindow != NULL
+// QTI_END: 2018-04-02: Video: Stagefright: Addition of DS capability
             && msg->findInt32("render", &render) && render != 0
             && !discarded && buffer->size() != 0) {
         ATRACE_NAME("render");
@@ -7166,27 +7194,41 @@ bool ACodec::UninitializedState::onAllocateComponent(const sp<AMessage> &msg) {
         mCodec->signalError(OMX_ErrorUndefined, UNKNOWN_ERROR);
         return false;
     }
+// QTI_BEGIN: 2018-03-29: Audio: Fix audio extended formats playback and record.
     AString owner = "default";
+// QTI_END: 2018-03-29: Audio: Fix audio extended formats playback and record.
     AString componentName = info->getCodecName();
     // we are no longer using "componentName" as we always pass the codec info for owner.
     // CHECK(msg->findString("componentName", &componentName));
     AString halName = info->getHalName();
 
+// QTI_BEGIN: 2018-03-29: Audio: Fix audio extended formats playback and record.
     //make sure if the component name contains qcom/qti, we don't return error
     //as these components are not present in media_codecs.xml and MediaCodecList won't find
+// QTI_END: 2018-03-29: Audio: Fix audio extended formats playback and record.
+// QTI_BEGIN: 2018-05-03: Audio: Add gracefull exit for extended audio codecs.
     //these component by findCodecByName.
     //Video and Flac decoder are present in list so exclude them.
+// QTI_END: 2018-05-03: Audio: Add gracefull exit for extended audio codecs.
+// QTI_BEGIN: 2018-12-10: Videp: libstagefright: do not check info for TME codec
     if ((!(componentName.find("qcom", 0) > 0 || componentName.find("qti", 0) > 0) ||
           componentName.find("video", 0) > 0 || componentName.find("flac", 0) > 0) &&
           !(componentName.find("tme",0) > 0)) {
+// QTI_END: 2018-12-10: Videp: libstagefright: do not check info for TME codec
+// QTI_BEGIN: 2018-03-29: Audio: Fix audio extended formats playback and record.
         if (info == nullptr) {
             ALOGE("Unexpected nullptr for codec information");
             mCodec->signalError(OMX_ErrorUndefined, UNKNOWN_ERROR);
             return false;
         }
+// QTI_END: 2018-03-29: Audio: Fix audio extended formats playback and record.
+// QTI_BEGIN: 2018-05-03: Audio: Add gracefull exit for extended audio codecs.
         owner = (info->getOwnerName() == nullptr) ? "default" : info->getOwnerName();
+// QTI_END: 2018-05-03: Audio: Add gracefull exit for extended audio codecs.
+// QTI_BEGIN: 2018-03-29: Audio: Fix audio extended formats playback and record.
     }
 
+// QTI_END: 2018-03-29: Audio: Fix audio extended formats playback and record.
     sp<CodecObserver> observer = new CodecObserver(notify);
     sp<IOMX> omx;
     sp<IOMXNode> omxNode;
@@ -7587,12 +7629,14 @@ void ACodec::LoadedToIdleState::stateEntered() {
         if (mCodec->allYourBuffersAreBelongToUs(kPortIndexOutput)) {
             mCodec->freeBuffersOnPort(kPortIndexOutput);
         }
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
         if (mCodec->allYourBuffersAreBelongToUs(kPortIndexInputExtradata)) {
             mCodec->freeBuffersOnPort(kPortIndexInputExtradata);
         }
         if (mCodec->allYourBuffersAreBelongToUs(kPortIndexOutputExtradata)) {
             mCodec->freeBuffersOnPort(kPortIndexOutputExtradata);
         }
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
 
         mCodec->changeState(mCodec->mLoadedState);
     }
@@ -7608,11 +7652,13 @@ status_t ACodec::LoadedToIdleState::allocateBuffers() {
     if (err != OK) {
         return err;
     }
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
     err = mCodec->allocateBuffersOnPort(kPortIndexInputExtradata);
     err = mCodec->allocateBuffersOnPort(kPortIndexOutputExtradata);
     if (err != OK) {
         err = OK; // Ignore Extradata buffer allocation failure
     }
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
 
     mCodec->mCallback->onStartCompleted();
 
@@ -9062,6 +9108,7 @@ void ACodec::ExecutingToIdleState::changeStateIfWeOwnAllBuffers() {
             if (err == OK) {
                 err = err2;
             }
+// QTI_BEGIN: 2018-02-07: Video: stagefright: Add support for extradata
             status_t err3 = mCodec->freeBuffersOnPort(kPortIndexInputExtradata);
             if (err == OK) {
                 err = err3;
@@ -9071,6 +9118,7 @@ void ACodec::ExecutingToIdleState::changeStateIfWeOwnAllBuffers() {
                 err = err4;
             }
 
+// QTI_END: 2018-02-07: Video: stagefright: Add support for extradata
         }
 
         if ((mCodec->mFlags & kFlagPushBlankBuffersToNativeWindowOnShutdown)

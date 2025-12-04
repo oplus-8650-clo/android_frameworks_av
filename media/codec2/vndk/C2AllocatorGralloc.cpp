@@ -1111,9 +1111,13 @@ c2_status_t SetMetadataToGralloc4Handle(
         return err;
     }
     // Use V0 dataspaces for Gralloc4+
-    if (android::media::codec::provider_->dataspace_v0_partial()) {
-        ColorUtils::convertDataSpaceToV0(dataSpace);
-    }
+// QTI_BEGIN: 2025-09-23: Video: vndk: remove dataspace_v0_partial flag and force enable conversion
+    // if (android::media::codec::provider_->dataspace_v0_partial()) {
+    //    ColorUtils::convertDataSpaceToV0(dataSpace);
+    // }
+    // Todo: Force enable and Need to revise code
+    ColorUtils::convertDataSpaceToV0(dataSpace);
+// QTI_END: 2025-09-23: Video: vndk: remove dataspace_v0_partial flag and force enable conversion
     status_t status = mapper.setDataspace(buffer.get(), static_cast<ui::Dataspace>(dataSpace));
     if (status != OK) {
        err = C2_CORRUPTED;

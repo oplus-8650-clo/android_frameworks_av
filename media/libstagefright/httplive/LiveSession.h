@@ -76,7 +76,9 @@ struct LiveSession : public AHandler {
     void setBufferingSettings(const BufferingSettings &buffering);
 
     int64_t calculateMediaTimeUs(int64_t firstTimeUs, int64_t timeUs, int32_t discontinuitySeq);
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual status_t dequeueAccessUnit(StreamType stream, sp<ABuffer> *accessUnit);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
 
     status_t getStreamFormatMeta(StreamType stream, sp<MetaData> *meta);
 
@@ -143,6 +145,7 @@ protected:
     // Buffer Prepare/Ready/Underflow Marks
     BufferingSettings mBufferingSettings;
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     struct BandwidthBaseEstimator : public RefBase {
         virtual void addBandwidthMeasurement(size_t numBytes, int64_t delayUs) = 0;
         virtual bool estimateBandwidth(
@@ -151,6 +154,7 @@ protected:
                 int32_t *shortTermBps = NULL) = 0;
     };
 
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     struct BandwidthEstimator;
     struct BandwidthItem {
         size_t mPlaylistIndex;
@@ -210,7 +214,9 @@ protected:
     ssize_t mOrigBandwidthIndex;
     int32_t mLastBandwidthBps;
     bool mLastBandwidthStable;
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     sp<BandwidthBaseEstimator> mBandwidthEstimator;
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
 
     sp<M3UParser> mPlaylist;
     int32_t mMaxWidth;
@@ -260,10 +266,14 @@ protected:
     KeyedVector<size_t, int64_t> mDiscontinuityAbsStartTimesUs;
     KeyedVector<size_t, int64_t> mDiscontinuityOffsetTimesUs;
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual sp<PlaylistFetcher> addFetcher(const char *uri);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
 
     void onConnect(const sp<AMessage> &msg);
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void onMasterPlaylistFetched(const sp<AMessage> &msg);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     void onSeek(const sp<AMessage> &msg);
 
     bool UriIsSameAsIndex( const AString &uri, int32_t index, bool newUri);
@@ -278,7 +288,9 @@ protected:
     float getAbortThreshold(
             ssize_t currentBWIndex, ssize_t targetBWIndex) const;
     void addBandwidthMeasurement(size_t numBytes, int64_t delayUs);
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual size_t getBandwidthIndex(int32_t bandwidthBps);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     ssize_t getLowestValidBandwidthIndex() const;
     HLSTime latestMediaSegmentStartTime() const;
 
@@ -293,7 +305,9 @@ protected:
     void onChangeConfiguration2(const sp<AMessage> &msg);
     void onChangeConfiguration3(const sp<AMessage> &msg);
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void swapPacketSource(StreamType stream);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     void tryToFinishBandwidthSwitch(const AString &oldUri);
     void cancelBandwidthSwitch(bool resume = false);
     bool checkSwitchProgress(
@@ -305,7 +319,9 @@ protected:
     void schedulePollBuffering();
     void cancelPollBuffering();
     void restartPollBuffering();
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void onPollBuffering();
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     bool checkBuffering(bool &underflow, bool &ready, bool &down, bool &up);
     void startBufferingIfNecessary();
     void stopBufferingIfNecessary();
@@ -313,7 +329,9 @@ protected:
 
     void finishDisconnect();
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void postPrepared(status_t err);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     void postError(status_t err);
 
     DISALLOW_EVIL_CONSTRUCTORS(LiveSession);

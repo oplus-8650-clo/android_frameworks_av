@@ -75,7 +75,9 @@ status_t AudioStreamOut::getPresentationPosition(uint64_t *frames, struct timesp
 
     if (mHalFormatHasProportionalFrames &&
             (flags & AUDIO_OUTPUT_FLAG_DIRECT) == AUDIO_OUTPUT_FLAG_DIRECT) {
+// QTI_BEGIN: 2024-11-26: Audio: Revert "av: Fix frames consumed for pcm during flush scenarios"
         *frames = halPosition / mRateMultiplier;
+// QTI_END: 2024-11-26: Audio: Revert "av: Fix frames consumed for pcm during flush scenarios"
     } else {
         // For offloaded MP3 and other compressed formats, and linear PCM.
         *frames = halPosition;

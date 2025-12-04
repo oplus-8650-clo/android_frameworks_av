@@ -3222,9 +3222,9 @@ NO_THREAD_SAFETY_ANALYSIS
 {
     // unfortunately we have no way of recovering from errors here, hence the LOG_ALWAYS_FATAL
     const audio_config_base_t audioConfig = mOutput->getAudioProperties();
-// QTI_BEGIN: 2023-06-22: Audio: audioflinger: Normalize FrameCount for duplicating thread
+// QTI_BEGIN: 2023-06-22: Core: audioflinger: Normalize FrameCount for duplicating thread
     bool isDup = false;
-// QTI_END: 2023-06-22: Audio: audioflinger: Normalize FrameCount for duplicating thread
+// QTI_END: 2023-06-22: Core: audioflinger: Normalize FrameCount for duplicating thread
     mSampleRate = audioConfig.sample_rate;
     mChannelMask = audioConfig.channel_mask;
     if (!audio_is_output_channel(mChannelMask)) {
@@ -3300,12 +3300,12 @@ NO_THREAD_SAFETY_ANALYSIS
         // This may need to be updated as MixerThread/OutputTracks are added and not here.
     }
 
-// QTI_BEGIN: 2023-06-22: Audio: audioflinger: Normalize FrameCount for duplicating thread
+// QTI_BEGIN: 2023-06-22: Core: audioflinger: Normalize FrameCount for duplicating thread
     if (property_get_bool("vendor.audio.gaming.enabled", false /* default_value */) &&
             mType == DUPLICATING) {
         isDup = true;
     }
-// QTI_END: 2023-06-22: Audio: audioflinger: Normalize FrameCount for duplicating thread
+// QTI_END: 2023-06-22: Core: audioflinger: Normalize FrameCount for duplicating thread
     // Calculate size of normal sink buffer relative to the HAL output buffer size
     double multiplier = 1.0;
     // Note: mType == SPATIALIZER does not support FastMixer and DEEP is by definition not "fast"

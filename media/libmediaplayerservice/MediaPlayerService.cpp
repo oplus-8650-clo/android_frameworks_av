@@ -1982,11 +1982,13 @@ int64_t MediaPlayerService::AudioOutput::getPlayedOutDurationUs(int64_t nowUs) c
         //        numFramesPlayed, (long long)numFramesPlayedAtUs);
     } else {                         // case 3: transitory at new track or audio fast tracks.
         res = mTrack->getPosition(&numFramesPlayed);
+// QTI_BEGIN: 2018-03-22: Audio: add support for error handling of dsp SSR
         if (res != OK) {
             // return with invalid duration to indicate playback position should
             // be queried from MediaClock using system clock
             return -1;
         }
+// QTI_END: 2018-03-22: Audio: add support for error handling of dsp SSR
         numFramesPlayedAtUs = nowUs;
         numFramesPlayedAtUs += 1000LL * mTrack->latency() / 2; /* XXX */
         //ALOGD("getPosition: %u %lld", numFramesPlayed, (long long)numFramesPlayedAtUs);
@@ -2534,9 +2536,11 @@ void MediaPlayerService::AudioOutput::close()
     ALOGV("close");
     sp<AudioTrack> track;
     {
+// QTI_BEGIN: 2022-02-17: Audio: libmediaplayerservice: Explicitly force callbacks to stop running
         if (mTrack != 0) {
             mTrack->stopAndJoinCallbacks();
         }
+// QTI_END: 2022-02-17: Audio: libmediaplayerservice: Explicitly force callbacks to stop running
         Mutex::Autolock lock(mLock);
         track = mTrack;
     }

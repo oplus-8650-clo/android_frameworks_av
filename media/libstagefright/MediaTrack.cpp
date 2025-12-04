@@ -195,10 +195,12 @@ status_t MediaTrackCUnwrapper::read(MediaBufferBase **buffer, const ReadOptions 
             meta.setData(kKeyOpaqueCSD0,
                     MetaDataBase::Type::TYPE_NONE, valbuf->data(), valbuf->size());
         }
+// QTI_BEGIN: 2019-10-20: Video: stagefright: Set HDR10+ sample metadata to codec
         if (format->mFormat->findBuffer("hdr10-plus-info", &valbuf)) {
             meta.setData(kKeyHdr10PlusInfo,
                     MetaDataBase::Type::TYPE_NONE, valbuf->data(), valbuf->size());
         }
+// QTI_END: 2019-10-20: Video: stagefright: Set HDR10+ sample metadata to codec
     } else {
         *buffer = nullptr;
     }

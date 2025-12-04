@@ -146,7 +146,9 @@ bool PipelineWatcher::pipelineFull() const {
 
 PipelineWatcher::Clock::duration PipelineWatcher::elapsed(
         const PipelineWatcher::Clock::time_point &now, size_t n) const {
+// QTI_BEGIN: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
     ALOGD("DEBUG: elapsed %zu / %zu", mFramesInPipeline.size(), n);
+// QTI_END: 2020-09-06: Video: CCodec: Do not update pipeline-watcher capacity when resuming
     if (mFramesInPipeline.size() <= n) {
         return Clock::duration::zero();
     }

@@ -42,7 +42,9 @@ struct NuPlayer : public AHandler {
 
     void setDataSourceAsync(const sp<IStreamSource> &source);
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void setDataSourceAsync(
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
             const sp<IMediaHTTPService> &httpService,
             const char *url,
             const KeyedVector<String8, String8> *headers);
@@ -105,8 +107,10 @@ struct NuPlayer : public AHandler {
     void setTargetBitrate(int bitrate /* bps */);
 
     void dump(AString& logString);
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     void logLatencyBegin(std::string strId);
     void logLatencyEnd(std::string strId);
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 
 protected:
     virtual ~NuPlayer();
@@ -134,7 +138,9 @@ public:
     struct RTSPSource;
     struct StreamingSource;
     struct Action;
+// QTI_BEGIN: 2018-09-07: Audio: Audio : AV Sync issue on BT-Sco to BT-A2dp switch.
     struct InstantiateDecoderAction;
+// QTI_END: 2018-09-07: Audio: Audio : AV Sync issue on BT-Sco to BT-A2dp switch.
     struct SeekAction;
     struct SetSurfaceAction;
     struct ResumeDecoderAction;
@@ -176,7 +182,9 @@ protected:
         kWhatPrepareDrm                 = 'pDrm',
         kWhatReleaseDrm                 = 'rDrm',
         kWhatMediaClockNotify           = 'mckN',
+// QTI_BEGIN: 2019-07-16: Video: NuPlayer: Resume renderer if wait for video pre-roll timedout
         kWhatWakeupRendererFromPreroll  = 'wrFP',
+// QTI_END: 2019-07-16: Video: NuPlayer: Resume renderer if wait for video pre-roll timedout
     };
 
     wp<NuPlayerDriver> mDriver;
@@ -199,7 +207,9 @@ protected:
     int32_t mAudioDecoderGeneration;
     int32_t mVideoDecoderGeneration;
     int32_t mRendererGeneration;
+// QTI_BEGIN: 2020-01-06: Video: Nuplayer: Update frame-rate based on display refresh rate
     int32_t mMaxOutputFrameRate;
+// QTI_END: 2020-01-06: Video: Nuplayer: Update frame-rate based on display refresh rate
 
     Mutex mPlayingTimeLock;
     int64_t mLastStartedPlayingTimeNs;
@@ -213,7 +223,9 @@ protected:
     int64_t mPreviousSeekTimeUs;
 
     List<sp<Action> > mDeferredActions;
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     std::unordered_map<std::string, std::chrono::time_point<std::chrono::system_clock>> mLatencyStartTime;
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 
     bool mAudioEOS;
     bool mVideoEOS;
@@ -349,7 +361,9 @@ protected:
     void performSetSurface(const sp<Surface> &wrapper);
     void performResumeDecoders(bool needNotify);
 
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual void onSourceNotify(const sp<AMessage> &msg);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
     void onClosedCaptionNotify(const sp<AMessage> &msg);
 
     void queueDecoderShutdown(

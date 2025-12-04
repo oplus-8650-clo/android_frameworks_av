@@ -101,8 +101,10 @@ NuPlayer::Decoder::Decoder(
       mNumVideoTemporalLayerAllowed(1),
       mCurrentMaxVideoTemporalLayerId(0),
       mResumePending(false),
+// QTI_BEGIN: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
       mComponentName("decoder"),
       mVideoRenderFps(0.0f) {
+// QTI_END: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
     mCodecLooper = new ALooper;
     mCodecLooper->setName("NPDecoder-CL");
     mCodecLooper->start(false, false, ANDROID_PRIORITY_AUDIO);
@@ -341,8 +343,10 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
     mIsAudio = !strncasecmp("audio/", mime.c_str(), 6);
     mIsVideoAVC = !strcasecmp(MEDIA_MIMETYPE_VIDEO_AVC, mime.c_str());
 
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     logLatencyBegin(mIsAudio ? "audioStart" : "videoStart");
 
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     mComponentName = mime;
     mComponentName.append(" decoder");
     ALOGV("[%s] onConfigure (surface=%p)", mComponentName.c_str(), mSurface.get());
@@ -399,8 +403,10 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
     mIsEncryptedObservedEarlier = mIsEncryptedObservedEarlier || mIsEncrypted;
     ALOGV("onConfigure mCrypto: %p (%d)  mIsSecure: %d",
             crypto.get(), (crypto != NULL ? crypto->getStrongCount() : 0), mIsSecure);
+// QTI_BEGIN: 2020-09-24: Video: media: drop frame with corrupt flag
     // set flag to drop frame with corrupt flag
     format->setInt32("vendor.qti-ext-dec-drop-corrupt.value", 1);
+// QTI_END: 2020-09-24: Video: media: drop frame with corrupt flag
 
     err = mCodec->configure(
             format, mSurface, crypto, 0 /* flags */);
@@ -414,6 +420,7 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
     }
     rememberCodecSpecificData(format);
 
+// QTI_BEGIN: 2023-06-23: Video: Nuplayer: Handle get input/output format errors cleanly
     // Do not assume mCodec is in configured state. There are some race conditions which will
     // move mCodec to error state after configure() has returned success.
     // As a temporary fix, handle the error case cleanly, without assert check.
@@ -429,6 +436,7 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
         handleError(err);
         return;
     }
+// QTI_END: 2023-06-23: Video: Nuplayer: Handle get input/output format errors cleanly
 
     {
         Mutex::Autolock autolock(mStatsLock);
@@ -462,7 +470,9 @@ void NuPlayer::Decoder::onConfigure(const sp<AMessage> &format) {
 
     mPaused = false;
     mResumePending = false;
+// QTI_BEGIN: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
     logLatencyEnd(mIsAudio ? "audioStart" : "videoStart");
+// QTI_END: 2023-07-07: Video: Nuplayer: Add latency logs for video and audio calls in nuplayer.
 }
 
 void NuPlayer::Decoder::onSetParameters(const sp<AMessage> &params) {
@@ -504,7 +514,9 @@ void NuPlayer::Decoder::onSetParameters(const sp<AMessage> &params) {
 
     if (needAdjustLayers) {
         float decodeFrameRate = mFrameRateTotal;
+// QTI_BEGIN: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
         float operating_rate;
+// QTI_END: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
         // enable temporal layering optimization only if we know the layering depth
         if (mNumVideoTemporalLayerTotal > 1) {
             int32_t layerId;
@@ -526,10 +538,12 @@ void NuPlayer::Decoder::onSetParameters(const sp<AMessage> &params) {
         }
 
         sp<AMessage> codecParams = new AMessage();
+// QTI_BEGIN: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
         operating_rate = decodeFrameRate * mPlaybackSpeed;
         if ((int)operating_rate > 100)
             mRequestInputBufferDelay = (1000.f/operating_rate) * 1000LL;
         codecParams->setFloat("operating-rate", operating_rate);
+// QTI_END: 2019-11-06: Video: Nuplayer: Update request input buffer delay as per fps
         mCodec->setParameters(codecParams);
     }
 
@@ -836,11 +850,13 @@ bool NuPlayer::Decoder::handleAnOutputBuffer(
         buffer->meta()->setInt64("frameIndex", frameIndex);
     }
 
+// QTI_BEGIN: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
     if (mVideoRenderFps > 0.0f) {
         buffer->meta()->setFloat("renderFps", mVideoRenderFps);
         mVideoRenderFps = 0.0f; //Reset the value after setting to renderer once
     }
 
+// QTI_END: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
     bool eos = flags & MediaCodec::BUFFER_FLAG_EOS;
     // we do not expect CODECCONFIG or SYNCFRAME for decoder
 
@@ -911,6 +927,7 @@ void NuPlayer::Decoder::handleOutputFormatChange(const sp<AMessage> &format) {
         notify->setInt32("what", kWhatVideoSizeChanged);
         notify->setMessage("format", format);
         notify->post();
+// QTI_BEGIN: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
 
         // Use the render rate from decoder, if decoder has set it.
         float renderRate = 0.0f;
@@ -919,6 +936,7 @@ void NuPlayer::Decoder::handleOutputFormatChange(const sp<AMessage> &format) {
             mVideoRenderFps = renderRate;
             ALOGI("Got video render rate from decoder as %f", mVideoRenderFps);
         }
+// QTI_END: 2020-11-23: Video: Nuplayer: Use video render rate from video decoder
     } else if (mRenderer != NULL) {
         uint32_t flags;
         int64_t durationUs;
@@ -1007,7 +1025,9 @@ status_t NuPlayer::Decoder::fetchInputData(sp<AMessage> &reply) {
                     // treat seamless format change separately
                     formatChange = !seamlessFormatChange;
                 }
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
                 AVNuUtils::get()->checkFormatChange(&formatChange, accessUnit);
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
 
                 // For format or time change, return EOS to queue EOS input,
                 // then wait for EOS on output.
@@ -1154,6 +1174,7 @@ bool NuPlayer::Decoder::onInputBufferFetched(const sp<AMessage> &msg) {
             }
         }
 
+// QTI_BEGIN: 2019-10-20: Video: stagefright: Set HDR10+ sample metadata to codec
         sp<ABuffer> hdr10PlusInfo;
         if (buffer->meta()->findBuffer("hdr10-plus-info", &hdr10PlusInfo) &&
                 hdr10PlusInfo != NULL) {
@@ -1162,6 +1183,7 @@ bool NuPlayer::Decoder::onInputBufferFetched(const sp<AMessage> &msg) {
            mCodec->setParameters(hdr10PlusMsg);
         }
 
+// QTI_END: 2019-10-20: Video: stagefright: Set HDR10+ sample metadata to codec
         int64_t timeUs = 0;
         uint32_t flags = 0;
         CHECK(buffer->meta()->findInt64("timeUs", &timeUs));

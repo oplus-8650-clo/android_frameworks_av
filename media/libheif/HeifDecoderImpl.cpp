@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
 /*
  * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
  * Copyright (c) 2025 Qualcomm Innovation Center, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
 
 //#define LOG_NDEBUG 0
 #include "include/HeifDecoderAPI.h"
@@ -40,11 +42,17 @@
 #include <algorithm>
 #include <vector>
 
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
 #include <sys/system_properties.h>
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
+// QTI_BEGIN: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
 #include <sys/types.h>
 #include <unistd.h>
+// QTI_END: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
 #define UI_PERFMODE "debug.ui.perfmode.enable"
 
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
 HeifDecoder* createHeifDecoder() {
     return new android::HeifDecoderImpl();
 }
@@ -597,29 +605,43 @@ bool HeifDecoderImpl::decode(HeifFrameInfo* frameInfo) {
     // scanline processing in parallel with decode. If this fails
     // we fallback to decoding the full frame.
     if (mHasImage) {
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
         bool useUIperf = false;
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
         if (mSliceHeight >= 512 &&
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
                  mImageInfo.mWidth >= 1280 &&
                  mImageInfo.mHeight >= 720 &&
                  mImageInfo.mWidth < 3000 &&
                  mImageInfo.mHeight < 2000) {
             char value[PROP_VALUE_MAX];
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
+// QTI_BEGIN: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
             char *stopStr;
             long int converted = 0;
+// QTI_END: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
             memset(value, 0 , sizeof(char)*PROP_VALUE_MAX);
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
+// QTI_BEGIN: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
             if (__system_property_get(UI_PERFMODE, value) > 0) {
                 converted = strtol(value, &stopStr, 0);
                 if (errno != EINVAL && errno != ERANGE && (strncmp(stopStr, "\0", 1) == 0)) {
                     if (converted > 0 && converted == getpid()) {
                         useUIperf = true;
                     }
+// QTI_END: 2025-05-06: Performance: Perf: Enable UI perf mode automatically according to pid
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
                 }
             }
         }
         if ((mSliceHeight >= 512 &&
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
                 mImageInfo.mWidth >= 3000 &&
+// QTI_BEGIN: 2025-04-28: Performance: Perf: UI perf mode optimization
                 mImageInfo.mHeight >= 2000) ||
                 useUIperf) {
+// QTI_END: 2025-04-28: Performance: Perf: UI perf mode optimization
             // Try decoding in slices only if the image has tiles and is big enough.
             mNumSlices = (mImageInfo.mHeight + mSliceHeight - 1) / mSliceHeight;
             ALOGV("mSliceHeight %u, mNumSlices %zu", mSliceHeight, mNumSlices);

@@ -522,10 +522,12 @@ C2Fence _C2FenceFactory::CreateSyncFence(int fenceFd, bool validate) {
     return C2Fence(p);
 }
 
+// QTI_BEGIN: 2024-09-19: Video: Codec2: Fence cleanup change
 C2Fence _C2FenceFactory::CreateSyncFence(int fenceFd) {
     return CreateSyncFence(fenceFd, true);
 }
 
+// QTI_END: 2024-09-19: Video: Codec2: Fence cleanup change
 C2Fence _C2FenceFactory::CreateUnorderedMultiSyncFence(
         const std::vector<int>& fenceFds, c2_status_t *status) {
     if (status) {

@@ -1,3 +1,4 @@
+// QTI_BEGIN: 2021-06-09: Core: Mediaserver Wrapper Implementation
 /*copyright 2008, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +14,11 @@
 ** limitations under the License.
 */
 
+// QTI_END: 2021-06-09: Core: Mediaserver Wrapper Implementation
+// QTI_BEGIN: 2021-06-15: Core: Mediaserver Android BP file Cleanup
 #define LOG_TAG "mediaserverwrapper"
+// QTI_END: 2021-06-15: Core: Mediaserver Android BP file Cleanup
+// QTI_BEGIN: 2021-06-09: Core: Mediaserver Wrapper Implementation
 //#define LOG_NDEBUG 0
 
 #include <binder/IPCThreadState.h>
@@ -37,8 +42,12 @@ int mediaserverwrapper(){
     int status = 0;
     bool MediaServer_PathSelect = property_get_bool("ro.mediaserver.64b.enable", false);
     const char *mediapath;
+// QTI_END: 2021-06-09: Core: Mediaserver Wrapper Implementation
+// QTI_BEGIN: 2021-08-26: Core: mediaserver: Fix mediaserver wrapper launch
     const char *processName = "/system/bin/mediaserver";
     ALOGI("Mediaserver Wrapper Has been started");
+// QTI_END: 2021-08-26: Core: mediaserver: Fix mediaserver wrapper launch
+// QTI_BEGIN: 2021-06-09: Core: Mediaserver Wrapper Implementation
     if (MediaServer_PathSelect){
         mediapath= "/system/bin/mediaserver64";
     }
@@ -46,7 +55,11 @@ int mediaserverwrapper(){
     {
         mediapath= "/system/bin/mediaserver";
     }
+// QTI_END: 2021-06-09: Core: Mediaserver Wrapper Implementation
+// QTI_BEGIN: 2021-08-26: Core: mediaserver: Fix mediaserver wrapper launch
     status = execl(mediapath,processName,NULL,NULL);
+// QTI_END: 2021-08-26: Core: mediaserver: Fix mediaserver wrapper launch
+// QTI_BEGIN: 2021-06-09: Core: Mediaserver Wrapper Implementation
     return status;
 }
 
@@ -54,3 +67,4 @@ int main(int argc __unused, char **argv __unused)
 {
     return mediaserverwrapper();
 }
+// QTI_END: 2021-06-09: Core: Mediaserver Wrapper Implementation

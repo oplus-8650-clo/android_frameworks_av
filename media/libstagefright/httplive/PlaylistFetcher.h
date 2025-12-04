@@ -147,8 +147,10 @@ protected:
     int32_t mNumRetriesForMonitorQueue;
     bool mStartup;
     bool mIDRFound;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     bool mLastIDRFound;
     int64_t mLastIDRTimeUs;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     int32_t mSeekMode;
     bool mTimeChangeSignaled;
     int64_t mNextPTSTimeUs;
@@ -174,7 +176,9 @@ protected:
     int64_t mFirstTimeUs;
     int64_t mSegmentFirstPTS;
     sp<AnotherPacketSource> mVideoBuffer;
+// QTI_BEGIN: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
     sp<AnotherPacketSource> mAudioBuffer;
+// QTI_END: 2018-05-13: Video: HLS: force audio/video both to start from IDR position
 
     // Stores the initialization vector to decrypt the next block of cipher text, which can
     // either be derived from the sequence number, read from the manifest, or copied from
@@ -259,7 +263,9 @@ protected:
 
     void updateDuration();
     void updateTargetDuration();
+// QTI_BEGIN: 2018-04-12: Video: httplive: refactor for HLS customization
     virtual bool checkSwitchBandwidth() { return false; }
+// QTI_END: 2018-04-12: Video: httplive: refactor for HLS customization
 
     DISALLOW_EVIL_CONSTRUCTORS(PlaylistFetcher);
 };

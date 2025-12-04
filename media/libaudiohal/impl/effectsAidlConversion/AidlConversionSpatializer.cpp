@@ -183,9 +183,9 @@ status_t AidlConversionSpatializer::getParameter(EffectParamWriter& param) {
                 for (const auto level : ::ndk::enum_range<Spatialization::Level>()) {
                     const auto spatializer =
                             Spatializer::make<Spatializer::spatializationLevel>(level);
-// QTI_BEGIN: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_BEGIN: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                     if (isValidRange(spatializer)) {
-// QTI_END: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_END: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                         levels.emplace_back(level);
                     }
                 }
@@ -263,9 +263,9 @@ status_t AidlConversionSpatializer::getParameter(EffectParamWriter& param) {
                 for (const auto mode : ::ndk::enum_range<Spatialization::Mode>()) {
                     if (const auto spatializer =
                                 Spatializer::make<Spatializer::spatializationMode>(mode);
-// QTI_BEGIN: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_BEGIN: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                                 isValidRange(spatializer)) {
-// QTI_END: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_END: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                         modes.emplace_back(mode);
                     }
                 }
@@ -286,9 +286,9 @@ status_t AidlConversionSpatializer::getParameter(EffectParamWriter& param) {
                 for (const auto mode : ::ndk::enum_range<HeadTracking::ConnectionMode>()) {
                     if (const auto spatializer =
                                 Spatializer::make<Spatializer::headTrackingConnectionMode>(mode);
-// QTI_BEGIN: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_BEGIN: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                                 isValidRange(spatializer)) {
-// QTI_END: 2025-06-11: Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
+// QTI_END: 2025-06-11: Multimedia/Systems Audio: libaudiohal: Fix for getting correct supported headtracking connection modes
                         modes.emplace_back(mode);
                     }
                 }

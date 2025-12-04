@@ -1,6 +1,8 @@
 service vendor.media.omx /vendor/bin/hw/android.hardware.media.omx@1.0-service
     class main
     user mediacodec
+#  QTI_BEGIN: 2018-10-09: Video: Revert "media: Add required group for mediacodec process."
     group camera drmrpc mediadrm audio
+#  QTI_END: 2018-10-09: Video: Revert "media: Add required group for mediacodec process."
     ioprio rt 4
     task_profiles ProcessCapacityHigh

@@ -687,7 +687,9 @@ private:
     void PostReplyWithError(const sp<AMessage> &msg, int32_t err);
     void PostReplyWithError(const sp<AReplyToken> &replyID, int32_t err);
 
+// QTI_BEGIN: 2018-04-22: Video: libstagefright: Detect component allocation type
     status_t init(const AString &name, bool nameIsType = false);
+// QTI_END: 2018-04-22: Video: libstagefright: Detect component allocation type
 
     void setState(State newState);
     void returnBuffersToCodec(bool isReclaim = false);

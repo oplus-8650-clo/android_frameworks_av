@@ -345,9 +345,11 @@ private:
 Codec2ConfigurableClient::HidlImpl::HidlImpl(const sp<Base>& base)
       : mBase{base},
         mName{[base]() -> C2String {
+// QTI_BEGIN: 2022-03-25: Video: Codec2Client: add nullptr check before accessing Configurable name
                 if (base == nullptr) {
                     return "";
                 }
+// QTI_END: 2022-03-25: Video: Codec2Client: add nullptr check before accessing Configurable name
                 C2String outName;
                 Return<void> transStatus = base->getName(
                         [&outName](const hidl_string& name) {
