@@ -6,8 +6,10 @@ package {
     //   SPDX-license-identifier-Apache-2.0
 }
 
-cc_defaults {
-    name: "libstagefright_bufferqueue-defaults",
+cc_library_shared {
+    name: "libstagefright_bufferqueue_helper",
+    vendor_available: true,
+
     double_loadable: true,
 
     srcs: [
@@ -40,6 +42,7 @@ cc_defaults {
         "libaconfig_storage_read_api_cc",
         "libbase",
         "libcutils",
+        "libgui",
         "libhidlbase",
         "libhidlmemory",
         "liblog",
@@ -47,12 +50,14 @@ cc_defaults {
         "libui",
         "libutils",
         "android.hardware.graphics.bufferqueue@1.0",
+        "android.hardware.graphics.bufferqueue@2.0",
     ],
 
     export_shared_lib_headers: [
         "libhidlmemory",
         "libstagefright_foundation",
         "android.hardware.graphics.bufferqueue@1.0",
+        "android.hardware.graphics.bufferqueue@2.0",
     ],
 
     cflags: [
@@ -61,23 +66,6 @@ cc_defaults {
         "-Wno-unused-parameter",
         "-Wno-documentation",
     ],
-
-    sanitize: {
-        misc_undefined: [
-            "signed-integer-overflow",
-            "unsigned-integer-overflow",
-        ],
-        cfi: true,
-    },
-}
-
-cc_library_shared {
-    name: "libstagefright_bufferqueue_helper",
-    defaults: ["libstagefright_bufferqueue-defaults"],
-    vendor_available: true,
-    min_sdk_version: "29",
-
-    shared_libs: ["libgui"],
     target: {
         vendor: {
             exclude_shared_libs: [
@@ -96,5 +84,12 @@ cc_library_shared {
                 "-DNO_BINDER",
             ],
         },
+    },
+    sanitize: {
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+        ],
+        cfi: true,
     },
 }
