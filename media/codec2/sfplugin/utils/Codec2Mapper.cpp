@@ -418,10 +418,17 @@ ALookup<C2Config::profile_t, int32_t> sAv1Profiles = {
     { C2Config::PROFILE_AV1_0, AV1ProfileMain10 },
     { C2Config::PROFILE_AV1_0, AV1ProfileMain10HDR10 },
     { C2Config::PROFILE_AV1_0, AV1ProfileMain10HDR10Plus },
+    { C2Config::PROFILE_AV1_1, AV1ProfileHigh8 },
+    { C2Config::PROFILE_AV1_1, AV1ProfileHigh10 },
+    { C2Config::PROFILE_AV1_2, AV1ProfileProfessional8 },
+    { C2Config::PROFILE_AV1_2, AV1ProfileProfessional10 },
+    { C2Config::PROFILE_AV1_2, AV1ProfileProfessional12 },
 };
 
 ALookup<C2Config::profile_t, int32_t> sAv1TenbitProfiles = {
     { C2Config::PROFILE_AV1_0, AV1ProfileMain10 },
+    { C2Config::PROFILE_AV1_1, AV1ProfileHigh10 },
+    { C2Config::PROFILE_AV1_2, AV1ProfileProfessional10 },
 };
 
 ALookup<C2Config::profile_t, int32_t> sAv1HdrProfiles = {

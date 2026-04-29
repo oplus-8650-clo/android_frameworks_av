@@ -695,14 +695,21 @@ static void parseAV1ProfileLevelFromCsd(const sp<ABuffer> &csd, sp<AMessage> &fo
     uint8_t profileData = (data[1] & 0xE0) >> 5;
     uint8_t levelData = data[1] & 0x1F;
     uint8_t highBitDepth = (data[2] & 0x40) >> 6;
+    uint8_t twelveBit = (data[2] & 0x20) >> 5;
+    uint8_t bitDepth = highBitDepth ? (twelveBit ? 12 : 10) : 8;
 
     const static ALookup<std::pair<uint8_t, uint8_t>, int32_t> profiles {
-        { { 0, 0 }, AV1ProfileMain8 },
-        { { 1, 0 }, AV1ProfileMain10 },
+        { {  8, 0 }, AV1ProfileMain8 },
+        { { 10, 0 }, AV1ProfileMain10 },
+        { {  8, 1 }, AV1ProfileHigh8 },
+        { { 10, 1 }, AV1ProfileHigh10 },
+        { {  8, 2 }, AV1ProfileProfessional8 },
+        { { 10, 2 }, AV1ProfileProfessional10 },
+        { { 12, 2 }, AV1ProfileProfessional12 },
     };
 
     int32_t profile;
-    if (profiles.map(std::make_pair(highBitDepth, profileData), &profile)) {
+    if (profiles.map(std::make_pair(bitDepth, profileData), &profile)) {
         // bump to HDR profile
         if (isHdr10or10Plus(format) && profile == AV1ProfileMain10) {
             if (format->contains("hdr10-plus-info")) {

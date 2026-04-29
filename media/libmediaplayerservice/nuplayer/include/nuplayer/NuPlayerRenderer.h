@@ -84,8 +84,10 @@ struct NuPlayer::Renderer : public AHandler {
             bool offloadOnly,
             bool hasVideo,
             uint32_t flags,
+// QTI_BEGIN: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
             bool *isOffloaded,
             bool isStreaming);
+// QTI_END: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
     void closeAudioSink();
 
     void dump(AString& logString);
@@ -96,7 +98,9 @@ struct NuPlayer::Renderer : public AHandler {
             bool offloadOnly,
             bool hasVideo,
             uint32_t flags,
+// QTI_BEGIN: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
             bool isStreaming,
+// QTI_END: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
             const sp<AMessage> &notify);
 
     enum {
@@ -327,8 +331,10 @@ protected:
             const sp<AMessage> &format,
             bool offloadOnly,
             bool hasVideo,
+// QTI_BEGIN: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
             uint32_t flags,
             bool isStreaming);
+// QTI_END: 2017-04-04: Audio: NuPlayer : send the correct streaming info while opening audio sink
     void onCloseAudioSink();
     void onChangeAudioFormat(const sp<AMessage> &meta, const sp<AMessage> &notify);
 

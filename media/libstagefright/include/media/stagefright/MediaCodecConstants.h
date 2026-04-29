@@ -360,6 +360,11 @@ inline static const char *asString_VP9Level(int32_t i, const char *def = "??") {
 
 inline constexpr int32_t AV1ProfileMain8 = 0x1;
 inline constexpr int32_t AV1ProfileMain10 = 0x2;
+inline constexpr int32_t AV1ProfileHigh8 = 0x4;
+inline constexpr int32_t AV1ProfileHigh10 = 0x8;
+inline constexpr int32_t AV1ProfileProfessional8 = 0x10;
+inline constexpr int32_t AV1ProfileProfessional10 = 0x20;
+inline constexpr int32_t AV1ProfileProfessional12 = 0x40;
 inline constexpr int32_t AV1ProfileMain10HDR10 = 0x1000;
 inline constexpr int32_t AV1ProfileMain10HDR10Plus = 0x2000;
 
@@ -367,6 +372,11 @@ inline static const char *asString_AV1Profile(int32_t i, const char *def = "??")
     switch (i) {
         case AV1ProfileMain8:           return "Main8";
         case AV1ProfileMain10:          return "Main10";
+        case AV1ProfileHigh8:           return "High8";
+        case AV1ProfileHigh10:          return "High10";
+        case AV1ProfileProfessional8:   return "Professional8";
+        case AV1ProfileProfessional10:  return "Professional10";
+        case AV1ProfileProfessional12:  return "Professional12";
         case AV1ProfileMain10HDR10:     return "Main10HDR10";
         case AV1ProfileMain10HDR10Plus: return "Main10HDRPlus";
         default:                        return def;
