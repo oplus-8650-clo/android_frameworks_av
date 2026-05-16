@@ -2835,10 +2835,12 @@ bool CCodecBufferChannel::handleWork(
             outBuffer->meta()->setInt64("timeUs", timestamp.peek());
             outBuffer->meta()->setInt32("flags", BUFFER_FLAG_CODEC_CONFIG);
             ALOGV("[%s] onWorkDone: csd index = %zu [%p]", mName, index, outBuffer.get());
+// QTI_BEGIN: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
             if (outputFormat) {
                 ALOGD("[%s] sending CSD : output format changed to %s",
                       mName, outputFormat->debugString().c_str());
             }
+// QTI_END: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
 
             // TRICKY: we want popped buffers reported in order, so sending
             // the callback while holding the lock here. This assumes that
@@ -2918,7 +2920,9 @@ bool CCodecBufferChannel::handleWork(
                 notifyClient,
                 timestamp.peek(),
                 flags,
+// QTI_BEGIN: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
                 (initData == nullptr ? outputFormat : nullptr),
+// QTI_END: 2020-12-03: Video: codec2: Avoid invalid access to output format while print
                 worklet->output.ordinal);
     }
     sendOutputBuffers();

@@ -8487,8 +8487,7 @@ uint32_t AudioPolicyManager::checkDeviceMuteStrategies(const sp<AudioOutputDescr
                 tempRecommendedMuteDuration : (outputDesc->latency() * muteLatencyFactor)
                 + routingLatency;
 // QTI_BEGIN: 2023-07-20: Audio: audiopolicy: use tempMuteDurationMs to adjust the sleep period of direct output
-        if (outputDesc->isDirectOutput() && tempRecommendedMuteDuration > 0)
-            muteWaitMs = tempMuteDurationMs;
+        muteWaitMs = tempMuteDurationMs;
 // QTI_END: 2023-07-20: Audio: audiopolicy: use tempMuteDurationMs to adjust the sleep period of direct output
 
         for (const auto &activeVs : outputDesc->getActiveVolumeSources()) {
